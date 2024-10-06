@@ -1,0 +1,175 @@
+# 服务概况 ---- 可自定义
+server:
+  # 项目端口
+  port: 8888
+  # 类似http://127.0.0.1这样的格式，这里仅做一个记录
+  domain: http://127.0.0.1
+  servlet:
+    # 项目基础URI
+    context-path: /api
+  # 开启Http2，使其能够进行多路复用
+  http2:
+    enabled: true
+  # 选择Undertow服务器配置
+  # todo 选择Undertow服务器配置（预先关闭）
+  # 注意：如果使用Undertow，需要在pom.xml中引入undertow-core依赖
+  undertow:
+    # HTTP post内容的最大大小。当值为-1时，默认值为大小是无限的
+    max-http-post-size: -1
+    # Undertow的URI编码
+    url-charset: UTF-8
+    # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作,有点类似netty的池化内存管理
+    # 每块buffer的空间大小,越小的空间被利用越充分
+    buffer-size: 512
+    # 是否分配的直接内存
+    direct-buffers: true
+    threads:
+      # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+      io: 16
+      # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, Undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
+      worker: 256
+  # 选择Tomcat服务器配置 (默认配置)
+  tomcat:
+    # Tomcat的URI编码
+    uri-encoding: UTF-8
+    # 连接数满后的排队数，默认为100
+    accept-count: 1000
+    threads:
+      # Tomcat最大线程数，默认为200
+      max: 800
+      # Tomcat启动初始化的线程数，默认值10
+      min-spare: 100
+
+# 公共配置文件
+spring:
+  # 项目前置工作 ---- 可自定义
+  application:
+    # 定义项目名称
+    name: spring-boot-init-template
+  # 项目启动 Banner 设置
+  banner:
+    # Banner 编码
+    charset: UTF-8
+    # Banner 路径
+    location: classpath:banner.txt
+  # 文件上传 ---- 可自定义
+  servlet:
+    multipart:
+      # 单个文件大小
+      max-file-size: 12MB
+      # 设置总上传的文件大小
+      max-request-size: 20MB
+  # 数据库配置
+  data:
+    # todo redis配置（预先开启单机模式）
+    # 系统缓存Redis配置（这里的Redis配置主要用于鉴权认证等模板自带服务的系统缓存服务，要求Redis版本在7.0以上）
+    redis:
+      # 单机地址（单价模式配置和集群模式配置只能存在一个）
+      host: 127.0.0.1
+      # 单机端口，默认为6379
+      port: 6379
+      # todo redis集群模式配置
+      # 集群地址（单价模式配置和集群模式配置只能存在一个）
+      #cluster:
+      #  nodes:
+      #    - 127.0.0.1:6379
+      #    - 127.0.0.1:6380
+      #    - 127.0.0.1:6381
+      #    - 127.0.0.1:6382
+      #    - 127.0.0.1:6383
+      #    - 127.0.0.1:6384
+      # 数据库索引
+      database: 0
+      # 密码（考虑是否需要密码）
+      password: huzhihao
+      # 连接超时时间
+      timeout: 3s
+      # redis连接池
+      lettuce:
+        pool:
+          # 最小空闲连接数
+          min-idle: 8
+          # 最大空闲连接数
+          max-idle: 25
+          # 最大活动连接数
+          max-active: 50
+          # 最大等待时间/ms
+          max-wait: 3000
+  autoconfigure:
+    ## 多数据源下必须排除掉 DataSourceAutoConfiguration,否则会导致循环依赖报错
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  # MySQL配置
+  datasource:
+    driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
+    url: jdbc:shardingsphere:classpath:mysql/mysql-dev.yaml
+    # druid 连接池管理
+    druid:
+      # 数据库类型
+      db-type: mysql
+      # 初始化时建立物理连接的个数
+      initial-size: 5
+      # 连接池的最小空闲数量
+      min-idle: 5
+      # 连接池最大连接数量
+      max-active: 20
+      # 获取连接时最大等待时间，单位毫秒
+      max-wait: 60000
+      # 申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      test-while-idle: true
+      # 既作为检测的间隔时间又作为testWhileIdel执行的依据
+      time-between-eviction-runs-millis: 60000
+      # 销毁线程时检测当前连接的最后活动时间和当前时间差大于该值时，关闭当前连接(配置连接在池中的最小生存时间)
+      min-evictable-idle-time-millis: 30000
+      # 用来检测数据库连接是否有效的sql 必须是一个查询语句(oracle中为 select 1 from dual)
+      validation-query: select 'x'
+      # 申请连接时会执行validationQuery检测连接是否有效,开启会降低性能,默认为true
+      test-on-borrow: false
+      # 归还连接时会执行validationQuery检测连接是否有效,开启会降低性能,默认为true
+      test-on-return: false
+      # 是否缓存preparedStatement, 也就是PSCache,PSCache对支持游标的数据库性能提升巨大，比如说oracle,在mysql下建议关闭。
+      pool-prepared-statements: false
+      # 置监控统计拦截的filters，去掉后监控界面sql无法统计，stat: 监控统计、Slf4j:日志记录、waLL: 防御sqL注入
+      filters: stat,wall,slf4j
+      # 要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100
+      max-pool-prepared-statement-per-connection-size: -1
+      # 合并多个DruidDataSource的监控数据
+      use-global-data-source-stat: true
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connect-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+      web-stat-filter:
+        # 是否启用StatFilter默认值true
+        enabled: true
+        # 添加过滤规则
+        url-pattern: /*
+        # 忽略过滤的格式
+        exclusions: /druid/*,*.js,*.gif,*.jpg,*.png,*.css,*.ico
+
+      stat-view-servlet:
+        # 是否启用StatViewServlet默认值true
+        enabled: true
+        # 访问路径为/druid时，跳转到StatViewServlet
+        url-pattern: /druid/*
+        # 是否能够重置数据
+        reset-enable: false
+        # 需要账号密码才能访问控制台，默认为root
+        login-username: root
+        login-password: password
+        # IP白名单
+        allow: 127.0.0.1
+        # IP黑名单（共同存在时，deny优先于allow）
+        deny:
+
+# Caffeine本地缓存配置
+caffeine:
+  # todo 是否启动（预先关闭）
+  enable: false
+  # 最后一次写入或访问后经过固定时间过期，单位：秒
+  expired: 1800
+  # 缓存初始容量
+  init-capacity: 256
+  # 缓存最大容量，超过之后会按照最近最少策略进行缓存剔除
+  max-capacity: 10000
+  # 是否允许空值null作为缓存的value
+  allow-null-value: true

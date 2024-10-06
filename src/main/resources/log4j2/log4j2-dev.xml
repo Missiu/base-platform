@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="120">
+    <!--
+    @status 配置系统日志记录级别，可能的值为：DEBUG, INFO, WARN, ERROR, FATAL
+    @monitorInterval 配置监控间隔时间，单位为秒。表示系统多久检查一次配置文件是否有更新
+    -->
+
+    <!-- 全局属性定义 -->
+    <properties>
+        <!-- 设置日志保存目录，统一命名为 /home/admin/应用名/logs -->
+        <property name="LOG_HOME">${APP_NAME}/logs</property>
+        <!-- todo: 设置应用名 -->
+        <property name="APP_NAME">template</property>
+    </properties>
+
+    <Appenders>
+        <!-- 控制台日志输出，用于开发环境调试，但生产环境应避免使用 -->
+        <Console name="consoleAppender" target="SYSTEM_OUT">
+            <!-- 设置日志消息的格式，包括日期、级别、线程名、类名、消息内容和异常信息 &#45;&#45;-->
+            <!-- 不禁用ANSI转义序列，以支持控制台颜色和样式-->
+            <!-- 如果不在控制台输出且非ANSI模式下，不禁用ANSI转义序-->
+            <PatternLayout
+                    pattern="%style{%d{ISO8601}}{bright,green} %highlight{%-5level} [%style{%t}{bright,blue}] %style{%C{}}{bright,yellow}: %msg%n%style{%throwable}{red}"
+                    disableAnsi="false" noConsoleNoAnsi="false"/>
+        </Console>
+
+        <!-- 综合日志：输出所有日志 -->
+        <RollingFile name="allFileAppender"
+                     fileName="${LOG_HOME}/${APP_NAME}.log"
+                     filePattern="${LOG_HOME}/${APP_NAME}.log.%d{yyyy-MM-dd}">
+            <!-- 日志的输出格式 -->
+            <PatternLayout>
+                <pattern>%d %p %C{} [%t] %m%n</pattern>
+            </PatternLayout>
+            <!-- 日志滚动的策略：基于文件大小和时间 -->
+            <Policies>
+                <!-- 当日志文件达到100MB时，触发日志滚动 -->
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <!-- 每隔一天生成一个新的日志文件 -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <!-- 日志文件的默认保留策略：最多保留15个日志文件 -->
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <!-- debug日志：仅在调试时使用，生产环境禁止输出 -->
+        <RollingFile name="debugFileAppender"
+                     fileName="${LOG_HOME}/debug.log"
+                     filePattern="${LOG_HOME}/debug.log.%d{yyyy-MM-dd}">
+            <Filters>
+                <ThresholdFilter level="info" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+            <PatternLayout>
+                <pattern>%d %p %C{} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <!-- info日志：适用于业务日志输出，注意选择性输出 -->
+        <RollingFile name="infoFileAppender"
+                     fileName="${LOG_HOME}/info.log"
+                     filePattern="${LOG_HOME}/info.log.%d{yyyy-MM-dd}">
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+            <PatternLayout>
+                <pattern>%d %p %C{} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <!-- warn日志：用于记录用户输入错误等场景，避免频繁触发error报警 -->
+        <RollingFile name="warnFileAppender"
+                     fileName="${LOG_HOME}/warn.log"
+                     filePattern="${LOG_HOME}/warn.log.%d{yyyy-MM-dd}">
+            <Filters>
+                <ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+            <PatternLayout>
+                <pattern>%d %p %C{} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <!-- error日志：用于记录系统异常，包含异常信息和堆栈信息 -->
+        <RollingFile name="errorFileAppender"
+                     fileName="${LOG_HOME}/error.log"
+                     filePattern="${LOG_HOME}/error.log.%d{yyyy-MM-dd}">
+            <PatternLayout>
+                <pattern>%d %p %C{} [%t] %m%n%ex</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy max="180"/> <!-- 保留六个月的日志 -->
+        </RollingFile>
+
+        <!-- error日志（JSON格式）：用于网络运行状态、安全事件等场景 -->
+        <RollingFile name="errorJsonAppender"
+                     fileName="${LOG_HOME}/error-json.log"
+                     filePattern="${LOG_HOME}/error-json.log.%d{yyyy-MM-dd}">
+            <JSONLayout compact="true" eventEol="true" locationInfo="true"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy max="180"/> <!-- 保留六个月的日志 -->
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <!-- 根日志设置：定义不同日志级别的输出，避免重复打印 -->
+        <!-- todo 定义日志级别-->
+        <Root level="info" additivity="false">
+            <AppenderRef ref="allFileAppender" level="all"/>
+            <AppenderRef ref="consoleAppender" level="debug"/>
+<!--            <AppenderRef ref="debugFileAppender" level="debug"/>-->
+            <AppenderRef ref="debugFileAppender" level="info"/>
+            <AppenderRef ref="infoFileAppender" level="info"/>
+            <AppenderRef ref="warnFileAppender" level="warn"/>
+            <AppenderRef ref="errorFileAppender" level="error"/>
+            <AppenderRef ref="errorJsonAppender" level="error"/>
+        </Root>
+
+        <!-- Spring日志配置，避免输出太多无用日志 -->
+        <Logger name="org.springframework" level="info" additivity="false"/>
+
+        <!-- 数据源、SQL执行日志配置，避免冗余日志输出 -->
+        <Logger name="druid.sql.Statement" level="warn" additivity="false"/>
+        <Logger name="com.mybatis" level="warn" additivity="false"/>
+        <Logger name="org.hibernate" level="warn" additivity="false"/>
+        <Logger name="org.quartz" level="info" additivity="false"/>
+
+    </Loggers>
+</Configuration>

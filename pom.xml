@@ -21,13 +21,34 @@
         <sa-token.version>1.38.0</sa-token.version>
         <knife4j.version>4.4.0</knife4j.version>
         <admin.version>2.7.15</admin.version>
-        <cos.version>5.6.213</cos.version>
+        <tencent.cos.version>5.6.229</tencent.cos.version>
+        <ali.oss.version>3.18.1</ali.oss.version>
+        <shardingsphere.version>5.5.0</shardingsphere.version>
+        <druid.starter.version>1.2.23</druid.starter.version>
+        <!-- 插件版本 -->
+        <maven.compiler.plugin.verison>3.13.0</maven.compiler.plugin.verison>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <!--解决 log4j-slf4j2-impl cannot be present with log4j-to-slf4j-->
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+                <!-- 排除logback依赖 使用log4j2-->
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!--test 依赖-->
@@ -49,7 +70,7 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
-        <!--devtools 依赖 热加载-->
+        <!--devtools 依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -67,6 +88,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- Caffeine 依赖配置 -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
         </dependency>
 
         <!--mysql 依赖-->
@@ -107,7 +134,7 @@
         <!-- sa-token 依赖 权限认证 -->
         <dependency>
             <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-spring-boot-starter</artifactId>
+            <artifactId>sa-token-spring-boot3-starter</artifactId>
             <version>${sa-token.version}</version>
         </dependency>
 
@@ -124,13 +151,6 @@
             <version>${knife4j.version}</version>
         </dependency>
 
-        <!--admin 依赖 监控 server -->
-        <dependency>
-            <groupId>de.codecentric</groupId>
-            <artifactId>spring-boot-admin-starter-server</artifactId>
-            <version>${admin.version}</version>
-        </dependency>
-
         <!--admin 依赖 监控 client -->
         <dependency>
             <groupId>de.codecentric</groupId>
@@ -138,29 +158,174 @@
             <version>${admin.version}</version>
         </dependency>
 
+        <!-- Netty 依赖 网络通信 -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+        </dependency>
+
+        <!--shardingsphere 依赖 分库分表 -->
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>shardingsphere-jdbc</artifactId>
+            <version>${shardingsphere.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.shardingsphere</groupId>
+                    <artifactId>shardingsphere-test-util</artifactId>
+                </exclusion>
+                <!-- 排除logback依赖 使用log4j2-->
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--druid 依赖 数据库连接池 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-3-starter</artifactId>
+            <version>${druid.starter.version}</version>
+        </dependency>
+
         <!--腾讯云cos 依赖-->
         <dependency>
             <groupId>com.qcloud</groupId>
             <artifactId>cos_api</artifactId>
-            <version>${cos.version}</version>
+            <version>${tencent.cos.version}</version>
+        </dependency>
+
+        <!-- 阿里云 OSS 依赖配置 -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>${ali.oss.version}</version>
         </dependency>
     </dependencies>
 
+
+    <!-- 项目构建概况 -->
     <build>
+        <finalName>${project.artifactId}-${project.version}-${spring.profiles.active}</finalName>
+        <!-- 构建插件 -->
         <plugins>
+            <!-- maven 打包 -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
+                    <!-- 指定应用程序的入口类 -->
+                    <mainClass>com.example.template.TemplateApplication</mainClass>
+                    <!-- 指定打包的布局类型为 JAR -->
+                    <layout>JAR</layout>
+                    <!-- 生成可执行的 JAR 文件 -->
+                    <executable>true</executable>
+                    <!-- 添加资源到 JAR 文件中 -->
+                    <addResources>true</addResources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.verison}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>
+
+        <resources>
+            <!-- 单个资源配置，用于加载特定配置文件 -->
+            <resource>
+                <directory>src/main/resources</directory> <!-- 指定资源目录 -->
+                <includes>
+                    <!-- 定义根据活跃的Spring配置文件加载相应的数据库配置 -->
+                    <include>mysql/mysql-${spring.profiles.active}.yaml</include>
+                    <!-- 定义根据活跃的Spring配置文件加载相应的应用配置 -->
+                    <include>application-${spring.profiles.active}.yaml</include>
+                    <!-- 加载通用的应用配置文件 -->
+                    <include>application.yaml</include>
+                </includes>
+                <!-- 启用过滤，允许使用Spring配置文件中的占位符进行动态配置 -->
+                <filtering>true</filtering>
+            </resource>
+            <!-- 单个资源配置，用于加载一系列开发过程中需要的资源文件 -->
+            <resource>
+                <directory>src/main/resources</directory> <!-- 指定资源目录 -->
+                <includes>
+                    <!-- 包含MyBatis映射文件 -->
+                    <include>mapper/**</include>
+                    <!-- 包含启动标识文件 -->
+                    <include>banner.txt</include>
+                    <!-- 包含其他配置文件 -->
+                    <include>log4j2/**</include>
+                </includes>
+                <!-- 禁用过滤，保留文件原始内容，不进行占位符替换 -->
+                <filtering>false</filtering>
+            </resource>
+        </resources>
     </build>
+
+    <!-- 多环境打包 -->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <!-- 默认激活dev环境-->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <spring.profiles.active>dev</spring.profiles.active>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <!--<activation>-->
+            <!--    <activeByDefault>true</activeByDefault>-->
+            <!--</activation>-->
+            <properties>
+                <spring.profiles.active>prod</spring.profiles.active>
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+        </profile>
+    </profiles>
+
+    <!-- 指定依赖仓库 -->
+    <repositories>
+        <repository>
+            <id>public</id>
+            <name>ALiCloud maven</name>
+            <url>https://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <!-- 指定插件仓库 -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>public</id>
+            <name>aliyun maven</name>
+            <url>https://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
 </project>
