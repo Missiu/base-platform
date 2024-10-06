@@ -1,5 +1,6 @@
 package com.example.template.config.json;
 
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
@@ -9,6 +10,8 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.context.annotation.Bean;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
@@ -16,17 +19,13 @@ import java.util.TimeZone;
 /**
  * SpringMVC JSON 配置
  *
- * @author AntonyCheng
+ * @author hzh
+ * @data 2024/10/5 11:40
  */
 @JsonComponent
 @Slf4j
 public class JsonConfiguration {
 
-    /**
-     * 添加 Long 转 json 精度丢失的配置
-     *
-     * @return Json自定义处理器
-     */
     /**
      * 配置 Jackson 处理器，优化 JSON 序列化和反序列化过程
      *
@@ -37,6 +36,14 @@ public class JsonConfiguration {
         return builder -> {
             // 全局配置序列化返回 JSON 处理
             JavaTimeModule javaTimeModule = new JavaTimeModule();
+            // 为 Long 类型添加自定义序列化器，处理大数字
+            javaTimeModule.addSerializer(Long.class, BigNumberSerializer.instance);
+            // 为 long 基本类型添加自定义序列化器，处理大数字
+            javaTimeModule.addSerializer(Long.TYPE, BigNumberSerializer.instance);
+            // 为 BigInteger 类型添加自定义序列化器，处理大数字
+            javaTimeModule.addSerializer(BigInteger.class, BigNumberSerializer.instance);
+            // 为 BigDecimal 类型添加自定义序列化器，将其转换为字符串形式
+            javaTimeModule.addSerializer(BigDecimal.class, ToStringSerializer.instance);
             // 定义日期时间格式化器
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             // 为 LocalDateTime 类型添加自定义序列化器，使用定义好的格式化器
@@ -55,7 +62,7 @@ public class JsonConfiguration {
      */
     @PostConstruct
     private void initDi() {
-        log.info("===== {} Configuration DI. =====", this.getClass().getSimpleName().split("\\$\\$")[0]);
+        log.info("=====> {} Configuration DI.", this.getClass().getSimpleName().split("\\$\\$")[0]);
     }
 
 }

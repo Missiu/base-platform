@@ -4,27 +4,30 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.template.module.mapper.UserMapper">
 
-    <resultMap id="BaseResultMap" type="com.example.template.module.model.entity.User">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="userAccount" column="user_account" jdbcType="VARCHAR"/>
-            <result property="userPassword" column="user_password" jdbcType="VARCHAR"/>
-            <result property="unionId" column="union_id" jdbcType="CHAR"/>
-            <result property="mpOpenId" column="mp_open_id" jdbcType="CHAR"/>
-            <result property="phone" column="phone" jdbcType="CHAR"/>
-            <result property="userName" column="user_name" jdbcType="VARCHAR"/>
-            <result property="userAvatar" column="user_avatar" jdbcType="VARCHAR"/>
-            <result property="userProfile" column="user_profile" jdbcType="VARCHAR"/>
-            <result property="userRole" column="user_role" jdbcType="OTHER"/>
-            <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
-            <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
-            <result property="deleted" column="is_deleted" jdbcType="TINYINT"/>
+    <resultMap id="BaseResultMap" type="com.example.template.module.domain.entity.User">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userAccount" column="user_account" jdbcType="VARCHAR"/>
+        <result property="userPassword" column="user_password" jdbcType="VARCHAR"/>
+        <result property="unionId" column="union_id" jdbcType="CHAR"/>
+        <result property="mpOpenId" column="mp_open_id" jdbcType="CHAR"/>
+        <result property="userPhone" column="user_phone" jdbcType="CHAR"/>
+        <result property="userEmail" column="user_email" jdbcType="VARCHAR"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="userAvatar" column="user_avatar" jdbcType="VARCHAR"/>
+        <result property="userProfile" column="user_profile" jdbcType="VARCHAR"/>
+        <result property="userRole" column="user_role" jdbcType="OTHER"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+        <!-- POJO类中的任何布尔类型的变量，都不要加is前缀，否则部分框架解析会引起序列化错误。-->
+        <result property="deleted" column="is_deleted" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_account,user_password,
-        union_id,mp_open_id,phone,
-        user_name,user_avatar,user_profile,
-        user_role,gmt_create,gmt_modified,
-        is_deleted
+        id
+        ,user_account,user_password,
+        union_id,mp_open_id,user_phone,
+        user_email,user_name,user_avatar,
+        user_profile,user_role,gmt_create,
+        gmt_modified,is_deleted
     </sql>
 </mapper>

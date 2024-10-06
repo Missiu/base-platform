@@ -1,12 +1,9 @@
 package com.example.template.module.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.template.common.propertie.CaffeineProperties;
-import com.example.template.common.propertie.ServerProperties;
-import com.example.template.module.model.entity.User;
+import com.example.template.module.domain.entity.User;
 import com.example.template.module.service.UserService;
 import com.example.template.module.mapper.UserMapper;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 /**

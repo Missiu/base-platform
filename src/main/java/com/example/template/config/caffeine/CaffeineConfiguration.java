@@ -1,6 +1,5 @@
 package com.example.template.config.caffeine;
 
-import com.example.template.common.propertie.CaffeineProperties;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import jakarta.annotation.PostConstruct;
@@ -33,7 +32,7 @@ public class CaffeineConfiguration {
      *
      * @return 本地缓存实例
      */
-    @Bean("localCache")
+    @Bean
     public Cache<String, Object> localCache() {
         return Caffeine.newBuilder()
                 // 设置缓存过期时间
@@ -52,7 +51,7 @@ public class CaffeineConfiguration {
      */
     @PostConstruct
     private void initDi() {
-        log.info("===== {} Configuration DI. =====", this.getClass().getSimpleName().split("\\$\\$")[0]);
+        log.info("=====> {} Configuration DI.", this.getClass().getSimpleName().split("\\$\\$")[0]);
     }
 
 }

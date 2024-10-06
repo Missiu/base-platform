@@ -107,14 +107,14 @@
             <AppenderRef ref="errorJsonAppender" level="error"/>
         </Root>
 
-        <!-- Spring日志配置，避免输出太多无用日志 -->
-        <Logger name="org.springframework" level="info" additivity="false"/>
+<!--        &lt;!&ndash; Spring日志配置，避免输出太多无用日志 &ndash;&gt;-->
+<!--        <Logger name="org.springframework" level="info" additivity="false"/>-->
 
-        <!-- 数据源、SQL执行日志配置，避免冗余日志输出 -->
-        <Logger name="druid.sql.Statement" level="warn" additivity="false"/>
-        <Logger name="com.mybatis" level="warn" additivity="false"/>
-        <Logger name="org.hibernate" level="warn" additivity="false"/>
-        <Logger name="org.quartz" level="info" additivity="false"/>
+<!--        &lt;!&ndash; 数据源、SQL执行日志配置，避免冗余日志输出 &ndash;&gt;-->
+<!--        <Logger name="druid.sql.Statement" level="warn" additivity="false"/>-->
+<!--        <Logger name="com.mybatis" level="warn" additivity="false"/>-->
+<!--        <Logger name="org.hibernate" level="warn" additivity="false"/>-->
+<!--        <Logger name="org.quartz" level="info" additivity="false"/>-->
 
     </Loggers>
 </Configuration>

@@ -1,4 +1,4 @@
-package com.example.template.module.model.entity;
+package com.example.template.module.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -47,7 +47,12 @@ public class User implements Serializable {
     /**
      * 手机号 定长16位
      */
-    private String phone;
+    private String userPhone;
+
+    /**
+     * 邮箱
+     */
+    private String userEmail;
 
     /**
      * 用户昵称
@@ -96,7 +101,8 @@ public class User implements Serializable {
                 ", userPassword='" + userPassword + '\'' +
                 ", unionId='" + unionId + '\'' +
                 ", mpOpenId='" + mpOpenId + '\'' +
-                ", phone='" + phone + '\'' +
+                ", userPhone='" + userPhone + '\'' +
+                ", userEmail='" + userEmail + '\'' +
                 ", userName='" + userName + '\'' +
                 ", userAvatar='" + userAvatar + '\'' +
                 ", userProfile='" + userProfile + '\'' +

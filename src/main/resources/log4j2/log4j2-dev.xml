@@ -8,7 +8,7 @@
     <!-- 全局属性定义 -->
     <properties>
         <!-- 设置日志保存目录，统一命名为 /home/admin/应用名/logs -->
-        <property name="LOG_HOME">${APP_NAME}/logs</property>
+        <property name="LOG_HOME">logs/${APP_NAME}</property>
         <!-- todo: 设置应用名 -->
         <property name="APP_NAME">template</property>
     </properties>
@@ -135,15 +135,6 @@
             <AppenderRef ref="errorFileAppender" level="error"/>
             <AppenderRef ref="errorJsonAppender" level="error"/>
         </Root>
-
-        <!-- Spring日志配置，避免输出太多无用日志 -->
-        <Logger name="org.springframework" level="info" additivity="false"/>
-
-        <!-- 数据源、SQL执行日志配置，避免冗余日志输出 -->
-        <Logger name="druid.sql.Statement" level="warn" additivity="false"/>
-        <Logger name="com.mybatis" level="warn" additivity="false"/>
-        <Logger name="org.hibernate" level="warn" additivity="false"/>
-        <Logger name="org.quartz" level="info" additivity="false"/>
 
     </Loggers>
 </Configuration>

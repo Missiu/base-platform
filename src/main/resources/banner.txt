@@ -1,7 +1,27 @@
-${AnsiColor.BRIGHT_CYAN}Spring Boot Version: v${spring-boot.version}
-${AnsiColor.BRIGHT_CYAN}Template Base Info:
-${AnsiColor.BRIGHT_CYAN}- Application Name: ${spring.application.name}
-${AnsiColor.BRIGHT_CYAN}- Server Domain: ${server.domain}
-${AnsiColor.BRIGHT_CYAN}- Server Port: ${server.port}
-${AnsiColor.BRIGHT_CYAN}- Servlet Context Path: ${server.servlet.context-path}
+${AnsiColor.BRIGHT_YELLOW}=======================================
+${AnsiColor.BRIGHT_YELLOW}      Spring Boot Application Info
+${AnsiColor.BRIGHT_YELLOW}=======================================
+
+${AnsiColor.BRIGHT_GREEN}Spring Boot Version: ${spring-boot.version}
+${AnsiColor.BRIGHT_GREEN}Java Version:        ${java.version} (${java.vendor})
+${AnsiColor.BRIGHT_GREEN}Author: Huzhihao
+${AnsiColor.BRIGHT_GREEN}Blog: https://www.huzhihao.top/
+${AnsiColor.BRIGHT_GREEN}GitHub: https://github.com/Misiuu
+
+${AnsiColor.BRIGHT_YELLOW}===== Template Base Info =====
+${AnsiColor.BRIGHT_CYAN}- Application Name:       ${spring.application.name}
+${AnsiColor.BRIGHT_CYAN}- Server Domain:          ${server.domain}
+${AnsiColor.BRIGHT_CYAN}- Server Port:            ${server.port}
+${AnsiColor.BRIGHT_CYAN}- Servlet Context Path:   ${server.servlet.context-path}
+
+${AnsiColor.BRIGHT_YELLOW}===== Druid DataSource =====
+${AnsiColor.BRIGHT_CYAN}- Druid DataSource URL:   ${server.domain}:${server.port}${server.servlet.context-path}${spring.datasource.druid.stat-view-servlet.url-pattern}
+${AnsiColor.BRIGHT_CYAN}- Username:               ${spring.datasource.druid.stat-view-servlet.login-username}
+${AnsiColor.BRIGHT_CYAN}- Password:                ${spring.datasource.druid.stat-view-servlet.login-password}
+
+${AnsiColor.BRIGHT_YELLOW}===== Knife4j API =====
+${AnsiColor.BRIGHT_CYAN}- Swagger API:            ${server.domain}:${server.port}${server.servlet.context-path}${springdoc.swagger-ui.path}
+${AnsiColor.BRIGHT_CYAN}- Knife4j API:            ${server.domain}:${server.port}${server.servlet.context-path}/doc.html
+
+${AnsiColor.BRIGHT_YELLOW}=======================================
 ${AnsiStyle.NORMAL}

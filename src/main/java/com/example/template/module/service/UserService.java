@@ -1,6 +1,6 @@
 package com.example.template.module.service;
 
-import com.example.template.module.model.entity.User;
+import com.example.template.module.domain.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

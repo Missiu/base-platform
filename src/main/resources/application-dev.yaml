@@ -11,7 +11,7 @@ server:
   http2:
     enabled: true
   # 选择Undertow服务器配置
-  # todo 选择Undertow服务器配置（预先关闭）
+  # todo 选择服务器 undertow和tomcat只能选择一个（预先关闭undertow）
   # 注意：如果使用Undertow，需要在pom.xml中引入undertow-core依赖
   undertow:
     # HTTP post内容的最大大小。当值为-1时，默认值为大小是无限的
@@ -64,6 +64,7 @@ spring:
     # todo redis配置（预先开启单机模式）
     # 系统缓存Redis配置（这里的Redis配置主要用于鉴权认证等模板自带服务的系统缓存服务，要求Redis版本在7.0以上）
     redis:
+      enabled: true
       # 单机地址（单价模式配置和集群模式配置只能存在一个）
       host: 127.0.0.1
       # 单机端口，默认为6379
@@ -95,14 +96,11 @@ spring:
           max-active: 50
           # 最大等待时间/ms
           max-wait: 3000
-  autoconfigure:
-    ## 多数据源下必须排除掉 DataSourceAutoConfiguration,否则会导致循环依赖报错
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
   # MySQL配置
   datasource:
     driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
-    url: jdbc:shardingsphere:classpath:mysql/mysql-dev.yaml
+    url: jdbc:shardingsphere:classpath:mysql/mysql-@spring.profiles.active@.yaml
     # druid 连接池管理
     druid:
       # 数据库类型
@@ -161,10 +159,46 @@ spring:
         # IP黑名单（共同存在时，deny优先于allow）
         deny:
 
+# 日志配置
+logging:
+  config: classpath:log4j2/log4j2-@spring.profiles.active@.xml
+
+# Knife4j的增强配置，不需要增强可以不配
+knife4j:
+  # 是否打开Knife4j的增强配置
+  enable: true
+  # todo 是否开启生产环境保护（由于拿到模板就需要二次开发，所以默认开发环境，即预先关闭）
+  production: false
+  setting:
+    language: zh-CN
+    enable-footer: true
+    enable-footer-custom: true
+    footer-custom-content: Apache License 2.0 | Copyright &copy; 2024 [Hu](https://github.com/Missiu)
+    enable-home-custom: true
+  # Basic验证
+  basic:
+    # todo 是否让页面带有Basic验证（如果只是查看api推荐打开，但是如果要在里面调试，推荐关闭，因为basic验证之后会占用请求头的Authorization字段，会导致需要登录验证的接口调用失败，预先关闭）
+    enable: true
+    # 登录用户名
+    username: admin
+    password: admin123456
+# SpringDoc-OpenAPI项目配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    version: openapi_3_1
+  swagger-ui:
+    path: /swagger-ui.html
+  group-configs:
+    - group: "template"
+      paths-to-match: "/**"
+      packages-to-scan:
+        - com.example.template.modules.controller
+
 # Caffeine本地缓存配置
 caffeine:
   # todo 是否启动（预先关闭）
-  enable: false
+  enable: true
   # 最后一次写入或访问后经过固定时间过期，单位：秒
   expired: 1800
   # 缓存初始容量
@@ -173,3 +207,59 @@ caffeine:
   max-capacity: 10000
   # 是否允许空值null作为缓存的value
   allow-null-value: true
+
+# 业务缓存Redisson配置（这里的Redisson配置主要用来系统业务逻辑的缓存服务，要求Redis版本在7.0以上）
+# 如果同时开启单机版本和集群版本，只有单机版本生效
+redisson:
+  # 线程池数量
+  threads: 4
+  # Netty线程池数量
+  netty-threads: 8
+  # Redis单机版本
+  single-server-config:
+    # todo 是否启动单机Redis（Redisson）缓存（预先关闭）
+    enable-single: true
+    # 单机地址（一定要在redis协议下）
+    address: redis://127.0.0.1:6379
+    # 数据库索引
+    database: 3
+    # 密码（考虑是否需要密码）
+    password: huzhihao
+    # 命令等待超时，单位：毫秒
+    timeout: 3000
+    # 发布和订阅连接池大小
+    subscription-connection-pool-size: 25
+    # 最小空闲连接数
+    connection-minimum-idle-size: 8
+    # 连接池大小
+    connection-pool-size: 32
+    # 连接空闲超时，单位：毫秒
+    idle-connection-timeout: 10000
+  # Redis集群版本
+  cluster-servers-config:
+    # todo 是否启动集群Redis（Redisson）缓存（预先关闭）
+    enable-cluster: false
+    # Redis集群节点（一定要在Redis协议下）
+    node-addresses:
+      - redis://127.0.0.1:6379
+      - redis://127.0.0.1:6380
+      - redis://127.0.0.1:6381
+      - redis://127.0.0.1:6382
+      - redis://127.0.0.1:6383
+      - redis://127.0.0.1:6384
+    # 密码（考虑是否需要密码）
+    #password: 123456
+    # master最小空闲连接数
+    master-connection-minimum-idleSize: 16
+    # master连接池大小
+    master-connection-pool-size: 32
+    # slave最小空闲连接数
+    slave-connection-minimum-idle-size: 16
+    # slave连接池大小
+    slave-connection-pool-size: 32
+    # 连接空闲超时，单位：毫秒
+    idle-connection-timeout: 10000
+    # 命令等待超时，单位：毫秒
+    timeout: 3000
+    # 发布和订阅连接池大小
+    subscription-connection-pool-size: 25
