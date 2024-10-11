@@ -1,5 +1,8 @@
 package com.example.template.config.redisson;
 
+import com.example.template.common.properties.RedissonProperties;
+import com.example.template.config.redisson.condition.RedissonClusterCondition;
+import com.example.template.config.redisson.condition.RedissonSingleCondition;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
@@ -10,7 +13,6 @@ import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.redisson.config.ReadMode;
 import org.redisson.config.SubscriptionMode;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
@@ -122,7 +124,7 @@ public class RedissonConfiguration {
      * 依赖注入日志输出
      */
     @PostConstruct
-    private void initDi() {
+    private void initConfig() {
         log.info("=====> {} Configuration DI.", this.getClass().getSimpleName().split("\\$\\$")[0]);
     }
 

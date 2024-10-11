@@ -1,13 +1,13 @@
 package com.example.template.module.mapper;
 
-import com.example.template.module.domain.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.example.template.module.domain.entity.User;
 
 /**
 * @author hzh
 * @description 针对表【user(用户表)】的数据库操作Mapper
-* @createDate 2024-10-04 20:52:02
-* @Entity generator.domain.User
+* @createDate 2024-10-09 22:15:52
+* @Entity com.example.template.module.domain.entity.User.User
 */
 public interface UserMapper extends BaseMapper<User> {
 

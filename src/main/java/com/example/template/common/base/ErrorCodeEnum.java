@@ -34,6 +34,7 @@ public enum ErrorCodeEnum {
     USER_ERROR_A0111("A0111", "用户名已存在"),
     USER_ERROR_A0112("A0112", "用户名包含敏感词"),
     USER_ERROR_A0113("A0113", "用户名包含特殊字符"),
+    USER_ERROR_A0114("A0114", "用户名长度不符合要求"),
     USER_ERROR_A0120("A0120", "密码校验失败"),
     USER_ERROR_A0121("A0121", "密码长度不够"),
     USER_ERROR_A0122("A0122", "密码强度不够"),
@@ -174,6 +175,7 @@ public enum ErrorCodeEnum {
     SYSTEM_ERROR_B0315("B0315", "系统线程池耗尽"),
     SYSTEM_ERROR_B0320("B0320", "系统资源访问异常"),
     SYSTEM_ERROR_B0321("B0321", "系统读取磁盘文件失败"),
+
 
     /* 第三方服务错误码 */
     // 一级宏观错误码

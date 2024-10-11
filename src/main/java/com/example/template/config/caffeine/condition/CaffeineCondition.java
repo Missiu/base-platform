@@ -1,4 +1,4 @@
-package com.example.template.config.caffeine;
+package com.example.template.config.caffeine.condition;
 
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;

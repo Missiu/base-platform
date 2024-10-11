@@ -36,19 +36,14 @@ public class JsonConfiguration {
         return builder -> {
             // 全局配置序列化返回 JSON 处理
             JavaTimeModule javaTimeModule = new JavaTimeModule();
-            // 为 Long 类型添加自定义序列化器，处理大数字
+            // 添加自定义序列化器，处理大数字
             javaTimeModule.addSerializer(Long.class, BigNumberSerializer.instance);
-            // 为 long 基本类型添加自定义序列化器，处理大数字
             javaTimeModule.addSerializer(Long.TYPE, BigNumberSerializer.instance);
-            // 为 BigInteger 类型添加自定义序列化器，处理大数字
             javaTimeModule.addSerializer(BigInteger.class, BigNumberSerializer.instance);
-            // 为 BigDecimal 类型添加自定义序列化器，将其转换为字符串形式
             javaTimeModule.addSerializer(BigDecimal.class, ToStringSerializer.instance);
             // 定义日期时间格式化器
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            // 为 LocalDateTime 类型添加自定义序列化器，使用定义好的格式化器
             javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(formatter));
-            // 为 LocalDateTime 类型添加自定义反序列化器，使用定义好的格式化器
             javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(formatter));
             // 将自定义模块添加到 builder 中
             builder.modules(javaTimeModule);
@@ -61,7 +56,7 @@ public class JsonConfiguration {
      * 依赖注入日志输出
      */
     @PostConstruct
-    private void initDi() {
+    private void initConfig() {
         log.info("=====> {} Configuration DI.", this.getClass().getSimpleName().split("\\$\\$")[0]);
     }
 

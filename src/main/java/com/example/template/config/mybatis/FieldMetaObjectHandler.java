@@ -1,6 +1,7 @@
 package com.example.template.config.mybatis;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.example.template.common.base.CommonConstants;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
  */
 @Component
 @Slf4j
-public class FieldMetaObjectConfiguration implements MetaObjectHandler {
+public class FieldMetaObjectHandler implements MetaObjectHandler {
 
     /**
      * gmtModified 更新时间字段名
@@ -27,6 +28,11 @@ public class FieldMetaObjectConfiguration implements MetaObjectHandler {
      * gmtCreate 创建时间字段名
      */
     public static final String CREATE = "gmtCreate";
+
+    /**
+     * isDeleted 是否删除
+     */
+    public static final String IS_DELETED = "deleted";
 
     /**
      * 插入时自动填充的字段
@@ -40,6 +46,10 @@ public class FieldMetaObjectConfiguration implements MetaObjectHandler {
 
         if (metaObject.hasSetter(CREATE)) {
             metaObject.setValue(CREATE, LocalDateTime.now());
+        }
+
+        if (metaObject.hasSetter(IS_DELETED)){
+            metaObject.setValue(IS_DELETED, CommonConstants.IS_NOT_DELETED);
         }
     }
 
@@ -58,7 +68,7 @@ public class FieldMetaObjectConfiguration implements MetaObjectHandler {
      * 依赖注入日志输出
      */
     @PostConstruct
-    private void initDi() {
+    private void initConfig() {
         log.info("=====> {} Configuration DI.", this.getClass().getSimpleName().split("\\$\\$")[0]);
     }
 

@@ -9,23 +9,30 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
  * 用户表
+ * @author hzh
  * @TableName user
  */
 @TableName(value = "user")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = true)
 public class User implements Serializable {
+
     /**
      * 用户ID
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * 账号
+     * 账号 建议大于4位
      */
     private String userAccount;
 
@@ -33,6 +40,11 @@ public class User implements Serializable {
      * 密码
      */
     private String userPassword;
+
+    /**
+     * 密码盐
+     */
+    private String passwordSalt;
 
     /**
      * 微信开放平台ID 定长29位
@@ -72,7 +84,7 @@ public class User implements Serializable {
     /**
      * 用户角色：user/admin/ban
      */
-    private Object userRole;
+    private String userRole;
 
     /**
      * 数据创建时间
@@ -87,29 +99,10 @@ public class User implements Serializable {
     /**
      * 是否已删除：1表示是，0表示否
      */
+    @TableField(value = "is_deleted")
     private Integer deleted;
 
-    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userAccount='" + userAccount + '\'' +
-                ", userPassword='" + userPassword + '\'' +
-                ", unionId='" + unionId + '\'' +
-                ", mpOpenId='" + mpOpenId + '\'' +
-                ", userPhone='" + userPhone + '\'' +
-                ", userEmail='" + userEmail + '\'' +
-                ", userName='" + userName + '\'' +
-                ", userAvatar='" + userAvatar + '\'' +
-                ", userProfile='" + userProfile + '\'' +
-                ", userRole=" + userRole +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                ", deleted=" + deleted +
-                '}';
-    }
 }

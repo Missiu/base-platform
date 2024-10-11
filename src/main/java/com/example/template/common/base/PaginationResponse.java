@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * 分页返回
+ * 不建议直接使用message字段，建议使用错误码枚举
  *
  * @author hzh
  * @data 2024/10/5 11:40

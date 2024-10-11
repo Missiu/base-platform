@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.DataChangeRecorderInnerI
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,7 +40,7 @@ public class MyBatisPlusConfiguration {
      * 依赖注入日志输出
      */
     @PostConstruct
-    private void initDi() {
+    private void initConfig() {
         log.info("=====> {} Configuration DI.", this.getClass().getSimpleName().split("\\$\\$")[0]);
     }
 

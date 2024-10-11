@@ -1,5 +1,7 @@
 package com.example.template.config.caffeine;
 
+import com.example.template.common.properties.CaffeineProperties;
+import com.example.template.config.caffeine.condition.CaffeineCondition;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import jakarta.annotation.PostConstruct;
@@ -50,7 +52,7 @@ public class CaffeineConfiguration {
      * 依赖注入日志输出
      */
     @PostConstruct
-    private void initDi() {
+    private void initConfig() {
         log.info("=====> {} Configuration DI.", this.getClass().getSimpleName().split("\\$\\$")[0]);
     }
 

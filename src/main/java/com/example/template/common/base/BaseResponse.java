@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * 基础返回
+ * 不建议直接使用message字段，建议使用错误码枚举
  *
  * @author hzh
  * @data 2024/10/5 10:59
@@ -46,6 +47,28 @@ public class BaseResponse<T> implements Serializable {
 
     /**
      * 成功返回，默认返回数据为null
+     * 必须添加注释充分说明什么情况下会返回null值
+     *
+     * @param <T> 返回的数据类型
+     * @return BaseResponse
+     */
+    public static <T> BaseResponse<T> success() {
+        return build(ErrorCodeEnum.SUCCESS.getCode(), null, ErrorCodeEnum.SUCCESS.getMessage());
+    }
+
+    /**
+     * 成功返回,可以自定义消息内容,默认返回数据为null
+     * 必须添加注释充分说明什么情况下会返回null值
+     *
+     * @param <T> 返回的数据类型
+     * @return BaseResponse
+     */
+    public static <T> BaseResponse<T> success(String message) {
+        return build(ErrorCodeEnum.SUCCESS.getCode(), null, message);
+    }
+
+    /**
+     * 成功返回，可以是空数组或者空对象,也可以是其他数据
      *
      * @param data 返回的数据
      * @param <T>  返回的数据类型
@@ -56,7 +79,7 @@ public class BaseResponse<T> implements Serializable {
     }
 
     /**
-     * 自定义消息内容，不建议
+     * 成功返回，自定义消息内容，可以是空数组或者空对象,也可以是其他数据,不建议
      *
      * @param data    返回的数据
      * @param message 自定义消息内容
@@ -68,7 +91,7 @@ public class BaseResponse<T> implements Serializable {
     }
 
     /**
-     * 方法的返回值可以为null，不强制返回空集合，或者空对象等
+     * 错误返回，方法的返回值可以为null，不强制返回空集合，或者空对象
      *
      * @param errorCodeEnum 错误码枚举
      * @param data          返回的数据
@@ -89,5 +112,18 @@ public class BaseResponse<T> implements Serializable {
     public static <T> BaseResponse<T> error(ErrorCodeEnum errorCodeEnum) {
         return build(errorCodeEnum.getCode(), null, errorCodeEnum.getMessage());
     }
+
+    /**
+     * 自定义消息内容，不建议
+     *
+     * @param errorCodeEnum 错误码枚举
+     * @param message       自定义消息内容
+     * @param <T>           返回的数据类型
+     * @return BaseResponse
+     */
+    public static <T> BaseResponse<T> error(ErrorCodeEnum errorCodeEnum, String message) {
+        return build(errorCodeEnum.getCode(), null, message);
+    }
+
 
 }

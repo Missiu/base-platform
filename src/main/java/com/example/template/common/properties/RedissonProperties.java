@@ -1,4 +1,4 @@
-package com.example.template.config.redisson;
+package com.example.template.common.properties;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,9 +8,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.List;
 
 /**
- * Redisson配置属性
+ * Redisson链接配置属性
  *
  * @author hzh
+ * @data 2024/10/7  13:17
  */
 @Data
 @ConfigurationProperties(prefix = "redisson")

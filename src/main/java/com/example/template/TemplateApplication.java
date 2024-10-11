@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @SpringBootApplication
 @ConfigurationPropertiesScan("com.example.template.config")
-@MapperScan("com.example.template")
+@MapperScan("com.example.template.module.mapper")
 public class TemplateApplication {
 
 	public static void main(String[] args) {

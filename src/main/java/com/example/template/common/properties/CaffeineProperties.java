@@ -1,4 +1,4 @@
-package com.example.template.config.caffeine;
+package com.example.template.common.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

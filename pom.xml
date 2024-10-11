@@ -26,8 +26,6 @@
         <ali.oss.version>3.18.1</ali.oss.version>
         <shardingsphere.version>5.5.0</shardingsphere.version>
         <druid.starter.version>1.2.23</druid.starter.version>
-        <!-- 插件版本 -->
-        <maven.compiler.plugin.verison>3.13.0</maven.compiler.plugin.verison>
     </properties>
 
     <dependencies>
@@ -111,7 +109,6 @@
             <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
-
         <!--hutool 依赖 提供工具类-->
         <dependency>
             <groupId>cn.hutool</groupId>
@@ -119,14 +116,14 @@
             <version>${hutool.version}</version>
         </dependency>
 
-        <!-- sa-token 依赖 整合redis -->
+        <!-- sa-token 依赖 整合redis (使用jackson序列化方式） -->
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-redis-jackson</artifactId>
             <version>${sa-token.version}</version>
         </dependency>
 
-        <!-- sa-token 依赖 权限认证 -->
+        <!-- sa-token 依赖 sa-token权限认证框架 -->
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-spring-boot3-starter</artifactId>
@@ -243,7 +240,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.plugin.verison}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
