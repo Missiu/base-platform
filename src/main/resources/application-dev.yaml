@@ -350,3 +350,14 @@ sa-token:
   is-log: on
   # 非jwt形式的token风格：uuid 带有中划线的uuid（默认）；simple-uuid 不带有中划线的uuid；random-32 随机32位字符串；random-64 随机64位字符串；random-128 随机128位字符串；tik tik风格。
   token-style: uuid
+
+# pagehelper配置
+pagehelper:
+  helper-dialect: mysql
+  # 分页合理化参数默认false，当该参数设置为true 时，pageNum <= 0 时，默认显示第一页，pageNum 超过 pageSize 时，显示最后一页
+  reasonable: true
+  # 分页插件会根据查询方法的参数中，自动根据params 配置的字段中取值，找到合适的值会自动分页。　
+  support-methods-arguments: false
+  # 用于从对象中根据属性名取值，可以配置pageNum，pageSize，count 不用配置映射的默认值。
+  params: countSql
+

@@ -1,6 +1,5 @@
 package com.example.template.module.service.impl;
 
-import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -10,14 +9,13 @@ import com.example.template.common.constant.RedisKeyConstants;
 import com.example.template.common.constant.RegexConstants;
 import com.example.template.common.constant.UserConstants;
 import com.example.template.exception.customize.ClientException;
-import com.example.template.module.domain.dto.auth.LoginByAccountDTO;
-import com.example.template.module.domain.dto.auth.RegisterByAccountDTO;
+import com.example.template.module.domain.dto.auth.UserLoginDTO;
+import com.example.template.module.domain.dto.auth.UserRegisterDTO;
 import com.example.template.module.domain.entity.User;
-import com.example.template.module.domain.vo.auth.LoginVO;
+import com.example.template.module.domain.vo.auth.UserInfoVO;
 import com.example.template.module.mapper.UserMapper;
 import com.example.template.module.service.AuthService;
-import com.example.template.util.ExceptionThrowUtils;
-import com.example.template.util.UserLoginUtils;
+import com.example.template.util.ThrowUtils;
 import com.example.template.util.encrypt.EncryptSHAWithSaltUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RAtomicLong;
@@ -25,12 +23,10 @@ import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author hzh
@@ -47,13 +43,10 @@ public class AuthServiceImpl extends ServiceImpl<UserMapper, User>
     @Autowired
     private RedissonClient singleClient;
 
-    @Autowired
-    private RedisTemplate<Object, Object> redisTemplate;
-
     @Override
-    public void registerByAccount(RegisterByAccountDTO registerByAccountDTO) {
-        String userAccount = registerByAccountDTO.getUserAccount();
-        String userPassword = registerByAccountDTO.getUserPassword();
+    public void registerByAccount(UserRegisterDTO userRegisterDTO) {
+        String userAccount = userRegisterDTO.getUserAccount();
+        String userPassword = userRegisterDTO.getUserPassword();
 
         // 1. 判断用户是否存在
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
@@ -61,21 +54,17 @@ public class AuthServiceImpl extends ServiceImpl<UserMapper, User>
         queryWrapper.eq(User::getUserRole, UserConstants.USER);
         User selectUserByAccount = userMapper.selectOne(queryWrapper);
         // 账户已存在
-        ExceptionThrowUtils.clientExceptionThrowIf(Objects.nonNull(selectUserByAccount), ErrorCodeEnum.USER_ERROR_A0111);
+        ThrowUtils.clientExceptionThrowIf(Objects.nonNull(selectUserByAccount), ErrorCodeEnum.USER_ERROR_A0111);
 
         // 账号只能包含字母、数字和下划线，且不能以数字开头
-        ExceptionThrowUtils.clientExceptionThrowIf(!userAccount.matches(RegexConstants.VALID_USER_ACCOUNT_REGEX), ErrorCodeEnum.USER_ERROR_A0113);
-        // 账号长度校验 5-25
-        ExceptionThrowUtils.clientExceptionThrowIf(userAccount.length() < 5 || userAccount.length() > 25, ErrorCodeEnum.USER_ERROR_A0114);
-        // 验证密码长度 6-126
-        ExceptionThrowUtils.clientExceptionThrowIf(userPassword.length() < 6 || userPassword.length() > 126, ErrorCodeEnum.USER_ERROR_A0121);
-        // 验证密码强度  验证密码长度 至少 8 个字符，至少包含 1 个大写字母、1 个小写字母、1 个数字和 1 个特殊字符
-        ExceptionThrowUtils.clientExceptionThrowIf(!userPassword.matches(RegexConstants.VALID_USER_PASSWORD_REGEX), ErrorCodeEnum.USER_ERROR_A0122);
+        ThrowUtils.clientExceptionThrowIf(!userAccount.matches(RegexConstants.VALID_USER_ACCOUNT_REGEX), ErrorCodeEnum.USER_ERROR_A0113);
+        // 验证密码强度 至少包含 1 个大写字母、1 个小写字母、1 个数字和 1 个特殊字符
+        ThrowUtils.clientExceptionThrowIf(!userPassword.matches(RegexConstants.VALID_USER_PASSWORD_REGEX), ErrorCodeEnum.USER_ERROR_A0122);
 
         // 密码加密
         String salt = EncryptSHAWithSaltUtils.generateSalt();
         String encryptPassword = EncryptSHAWithSaltUtils.hashPassword(userPassword, salt);
-        ExceptionThrowUtils.clientExceptionThrowIf(StringUtils.isEmpty(encryptPassword), ErrorCodeEnum.SYSTEM_ERROR_B0001);
+        ThrowUtils.clientExceptionThrowIf(StringUtils.isEmpty(encryptPassword), ErrorCodeEnum.SYSTEM_ERROR_B0001);
 
         // 插入新用户数据
         User user = new User()
@@ -86,18 +75,19 @@ public class AuthServiceImpl extends ServiceImpl<UserMapper, User>
 
         int insert = userMapper.insert(user);
         // 插入失败
-        ExceptionThrowUtils.serverExceptionThrowIf(insert <= 0, ErrorCodeEnum.SERVICE_ERROR_C0300);
+        ThrowUtils.serverExceptionThrowIf(insert <= 0, ErrorCodeEnum.SERVICE_ERROR_C0300);
     }
 
     @Override
-    public LoginVO loginByAccount(LoginByAccountDTO loginByAccountDTO) {
-        String userAccount = loginByAccountDTO.getUserAccount();
+    public UserInfoVO loginByAccount(UserLoginDTO userLoginDTO) {
+        String userAccount = userLoginDTO.getUserAccount();
+        String userPassword = userLoginDTO.getUserPassword();
 
         // 判断用户是否存在
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUserAccount, userAccount);
         User selectUserByAccount = userMapper.selectOne(queryWrapper);
-        ExceptionThrowUtils.clientExceptionThrowIf(Objects.isNull(selectUserByAccount), ErrorCodeEnum.USER_ERROR_A0201);
+        ThrowUtils.clientExceptionThrowIf(Objects.isNull(selectUserByAccount), ErrorCodeEnum.USER_ERROR_A0201);
 
         // 记录用户登录失败次数的 Redis 键
         String loginFailedTimesKey = RedisKeyConstants.LOGIN_FAILED_TIMES + userAccount;
@@ -132,25 +122,24 @@ public class AuthServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
         // 验证密码
-        String userPassword = loginByAccountDTO.getUserPassword();
         String salt = selectUserByAccount.getPasswordSalt();
         String hashPassword = selectUserByAccount.getUserPassword();
         boolean verified = EncryptSHAWithSaltUtils.verifyPassword(userPassword, hashPassword, salt);
-        ExceptionThrowUtils.clientExceptionThrowIf(!verified, ErrorCodeEnum.USER_ERROR_A0120);
+        ThrowUtils.clientExceptionThrowIf(!verified, ErrorCodeEnum.USER_ERROR_A0120);
 
         // 登录成功，记录登录信息,构建登录返回对象
-        LoginVO loginVO = new LoginVO();
-        BeanUtils.copyProperties(selectUserByAccount, loginVO);
+        UserInfoVO userInfoVO = new UserInfoVO();
+        BeanUtils.copyProperties(selectUserByAccount, userInfoVO);
 
         // 登录成功, 删除登录失败次数记录
         loginFailedTimesBucket.delete();
 
-        // 保存到 redis 中 key为saToken设定，自动设置
-        Long loginId = loginVO.getId();
+        // 保存到 redis 中 key为saToken自动设定
+        Long loginId = userInfoVO.getId();
         StpUtil.login(loginId);
         String token = StpUtil.getTokenValueByLoginId(loginId);
-        loginVO.setToken(token);
-        return loginVO;
+        userInfoVO.setToken(token);
+        return userInfoVO;
     }
 }
 

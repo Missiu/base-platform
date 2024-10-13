@@ -2,7 +2,8 @@ package com.example.template.util;
 
 import com.example.template.common.base.ErrorCodeEnum;
 import com.example.template.exception.customize.ClientException;
-import com.example.template.exception.customize.ServerException;
+import com.example.template.exception.customize.RemoteServiceException;
+import com.example.template.exception.customize.ServiceException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -13,7 +14,7 @@ import java.io.StringWriter;
  * @author hzh
  * @data 2024/10/7 12:57
  */
-public class ExceptionThrowUtils {
+public class ThrowUtils {
     /**
      * 条件成立则抛客户端异常
      *
@@ -27,6 +28,19 @@ public class ExceptionThrowUtils {
     }
 
     /**
+     * 条件成立则抛客户端异常
+     *
+     * @param condition     条件
+     * @param errorCodeEnum 错误码枚举
+     * @param message       自定义异常信息
+     */
+    public static void clientExceptionThrowIf(boolean condition, ErrorCodeEnum errorCodeEnum, String message) {
+        if (condition) {
+            throw new ClientException(errorCodeEnum, message);
+        }
+    }
+
+    /**
      * 条件成立则抛服务端异常
      *
      * @param condition     条件
@@ -34,7 +48,32 @@ public class ExceptionThrowUtils {
      */
     public static void serverExceptionThrowIf(boolean condition, ErrorCodeEnum errorCodeEnum) {
         if (condition) {
-            throw new ServerException(errorCodeEnum);
+            throw new ServiceException(errorCodeEnum);
+        }
+    }
+
+    /**
+     * 条件成立则抛服务端异常
+     *
+     * @param condition     条件
+     * @param errorCodeEnum 错误码枚举
+     * @param message       自定义异常信息
+     */
+    public static void serverExceptionThrowIf(boolean condition, ErrorCodeEnum errorCodeEnum, String message) {
+        if (condition) {
+            throw new ServiceException(errorCodeEnum, message);
+        }
+    }
+
+    /**
+     * 条件成立则远程调用服务端异常
+     *
+     * @param condition     条件
+     * @param errorCodeEnum 错误码枚举
+     */
+    public static void remoteServerExceptionThrowIf(boolean condition, ErrorCodeEnum errorCodeEnum) {
+        if (condition) {
+            throw new RemoteServiceException(errorCodeEnum);
         }
     }
 

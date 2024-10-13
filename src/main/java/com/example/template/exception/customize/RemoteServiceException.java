@@ -3,18 +3,17 @@ package com.example.template.exception.customize;
 import com.example.template.common.base.ErrorCodeEnum;
 
 /**
- * 客户端异常类
- * 构造函数，默认系统端错误码 USER_ERROR_0001 (用户端错误)。
+ * 远程服务异常类
  *
  * @author hzh
  * @data 2024/10/7 12:19
  */
-public class ClientException extends BaseException {
+public class RemoteServiceException extends BaseException {
     /**
      * 构造函数，默认系统端错误码 USER_ERROR_0001 (用户端错误)。
      */
-    public ClientException() {
-        this.errorCode = ErrorCodeEnum.USER_ERROR_0001;
+    public RemoteServiceException() {
+        this.errorCode = ErrorCodeEnum.SERVICE_ERROR_C0001;
     }
 
     /**
@@ -22,7 +21,7 @@ public class ClientException extends BaseException {
      *
      * @param errorCode 自定义错误码枚举
      */
-    public ClientException(ErrorCodeEnum errorCode) {
+    public RemoteServiceException(ErrorCodeEnum errorCode) {
         this.errorCode = errorCode;
     }
 
@@ -34,7 +33,7 @@ public class ClientException extends BaseException {
      * @param errorCode 自定义错误码枚举
      * @param message   自定义错误信息
      */
-    public ClientException(ErrorCodeEnum errorCode, String message) {
+    public RemoteServiceException(ErrorCodeEnum errorCode, String message) {
         this.errorCode = errorCode;
         this.message = message;
     }

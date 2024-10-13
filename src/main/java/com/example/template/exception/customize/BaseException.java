@@ -1,4 +1,4 @@
-package com.example.template.exception;
+package com.example.template.exception.customize;
 
 import com.example.template.common.base.ErrorCodeEnum;
 import lombok.Data;

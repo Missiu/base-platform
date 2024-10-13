@@ -1,5 +1,6 @@
-package com.example.template.common.base;
+package com.example.template.common.base.response;
 
+import com.example.template.common.base.ErrorCodeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -22,11 +23,14 @@ public class BaseResponse<T> implements Serializable {
     @Schema(description = "状态码")
     private String code;
 
-    @Schema(description = "返回数据")
-    private T data;
-
     @Schema(description = "消息内容")
     private String message;
+
+    @Schema(description = "是否成功")
+    private boolean success;
+
+    @Schema(description = "返回数据")
+    private T data;
 
     /**
      * 构造方法
@@ -37,11 +41,12 @@ public class BaseResponse<T> implements Serializable {
      * @param <T>     返回的数据类型
      * @return BaseResponse
      */
-    private static <T> BaseResponse<T> build(String code, T data, String message) {
+    private static <T> BaseResponse<T> build(String code, String message, boolean success, T data) {
         BaseResponse<T> result = new BaseResponse<>();
         result.setCode(code);
         result.setData(data);
         result.setMessage(message);
+        result.setSuccess(success);
         return result;
     }
 
@@ -53,7 +58,7 @@ public class BaseResponse<T> implements Serializable {
      * @return BaseResponse
      */
     public static <T> BaseResponse<T> success() {
-        return build(ErrorCodeEnum.SUCCESS.getCode(), null, ErrorCodeEnum.SUCCESS.getMessage());
+        return build(ErrorCodeEnum.SUCCESS.getCode(), ErrorCodeEnum.SUCCESS.getMessage(), true, null);
     }
 
     /**
@@ -64,7 +69,7 @@ public class BaseResponse<T> implements Serializable {
      * @return BaseResponse
      */
     public static <T> BaseResponse<T> success(String message) {
-        return build(ErrorCodeEnum.SUCCESS.getCode(), null, message);
+        return build(ErrorCodeEnum.SUCCESS.getCode(), message, true, null);
     }
 
     /**
@@ -75,7 +80,7 @@ public class BaseResponse<T> implements Serializable {
      * @return BaseResponse
      */
     public static <T> BaseResponse<T> success(T data) {
-        return build(ErrorCodeEnum.SUCCESS.getCode(), data, ErrorCodeEnum.SUCCESS.getMessage());
+        return build(ErrorCodeEnum.SUCCESS.getCode(), ErrorCodeEnum.SUCCESS.getMessage(), true, data);
     }
 
     /**
@@ -87,7 +92,7 @@ public class BaseResponse<T> implements Serializable {
      * @return BaseResponse
      */
     public static <T> BaseResponse<T> success(T data, String message) {
-        return build(ErrorCodeEnum.SUCCESS.getCode(), data, message);
+        return build(ErrorCodeEnum.SUCCESS.getCode(), message, true, data);
     }
 
     /**
@@ -99,7 +104,7 @@ public class BaseResponse<T> implements Serializable {
      * @return BaseResponse
      */
     public static <T> BaseResponse<T> error(ErrorCodeEnum errorCodeEnum, T data) {
-        return build(errorCodeEnum.getCode(), data, errorCodeEnum.getMessage());
+        return build(errorCodeEnum.getCode(), errorCodeEnum.getMessage(), false, data);
     }
 
     /**
@@ -110,11 +115,11 @@ public class BaseResponse<T> implements Serializable {
      * @return BaseResponse
      */
     public static <T> BaseResponse<T> error(ErrorCodeEnum errorCodeEnum) {
-        return build(errorCodeEnum.getCode(), null, errorCodeEnum.getMessage());
+        return build(errorCodeEnum.getCode(), errorCodeEnum.getMessage(), false, null);
     }
 
     /**
-     * 自定义消息内容，不建议
+     * 自定义消息内容
      *
      * @param errorCodeEnum 错误码枚举
      * @param message       自定义消息内容
@@ -122,8 +127,6 @@ public class BaseResponse<T> implements Serializable {
      * @return BaseResponse
      */
     public static <T> BaseResponse<T> error(ErrorCodeEnum errorCodeEnum, String message) {
-        return build(errorCodeEnum.getCode(), null, message);
+        return build(errorCodeEnum.getCode(), message, false, null);
     }
-
-
 }

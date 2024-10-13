@@ -19,6 +19,31 @@ public interface CommonConstants {
     Integer IS_NOT_DELETED = 0;
 
     /**
+     * 默认分页大小
+     */
+    Integer PAGE_SIZE = 10;
+
+    /**
+     * 默认当前页码
+     */
+    Integer PAGE_NUM = 1;
+
+    /**
+     * 最大分页大小，-1 不受限制
+     */
+    Long MAX_PAGE_SIZE = 500L;
+
+    /**
+     * 后端排序方向：降序
+     */
+    String ORDER_BY_DESC = "DESC";
+
+    /**
+     * 后端排序方向：升序
+     */
+    String ORDER_BY_ASC = "ASC";
+
+    /**
      * RSA加密算法
      */
     String RSA = "RSA";

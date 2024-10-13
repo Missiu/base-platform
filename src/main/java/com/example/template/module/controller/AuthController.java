@@ -1,18 +1,23 @@
 package com.example.template.module.controller;
 
-import com.example.template.common.base.BaseResponse;
 import com.example.template.common.base.ErrorCodeEnum;
-import com.example.template.module.domain.dto.auth.LoginByAccountDTO;
-import com.example.template.module.domain.dto.auth.RegisterByAccountDTO;
-import com.example.template.module.domain.vo.auth.LoginVO;
+import com.example.template.common.base.response.BaseResponse;
+import com.example.template.module.domain.dto.auth.UserLoginDTO;
+import com.example.template.module.domain.dto.auth.UserRegisterDTO;
+import com.example.template.module.domain.groups.auth.LoginByAccount;
+import com.example.template.module.domain.groups.auth.RegisterByAccount;
+import com.example.template.module.domain.vo.auth.UserInfoVO;
 import com.example.template.module.service.AuthService;
-import com.example.template.util.ExceptionThrowUtils;
+import com.example.template.util.ThrowUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 用户认证模块
@@ -34,11 +39,14 @@ public class AuthController {
      */
     @PostMapping("/register-account")
     @Operation(description = "注册-账号密码")
-    public BaseResponse<String> registerByAccount(@Validated @RequestBody RegisterByAccountDTO registerByAccountDTO) {
+    public BaseResponse<String> registerByAccount(@Validated({RegisterByAccount.class}) @RequestBody UserRegisterDTO userRegisterDTO) {
+        String userPassword = userRegisterDTO.getUserPassword();
+        String confirmPassword = userRegisterDTO.getConfirmPassword();
         // 判断两次输入的密码是否一致
-        ExceptionThrowUtils.clientExceptionThrowIf(!StringUtils.equals(registerByAccountDTO.getUserPassword(), registerByAccountDTO.getConfirmPassword()), ErrorCodeEnum.USER_ERROR_A0120);
-        authService.registerByAccount(registerByAccountDTO);
-        // 这里应该返回注册成功的token，前端根据token获取用户信息
+        ThrowUtils.clientExceptionThrowIf(!StringUtils.equals(userPassword, confirmPassword),
+                ErrorCodeEnum.USER_ERROR_A0120, "两次输入的密码不一致");
+        authService.registerByAccount(userRegisterDTO);
+
         return BaseResponse.success("注册成功");
     }
 
@@ -49,9 +57,10 @@ public class AuthController {
      */
     @PostMapping("/login-account")
     @Operation(description = "登录-账号密码")
-    public BaseResponse<LoginVO> loginByAccount(@Validated @RequestBody LoginByAccountDTO loginByAccountDTO) {
-        LoginVO loginVO = authService.loginByAccount(loginByAccountDTO);
-        return BaseResponse.success(loginVO);
+    public BaseResponse<UserInfoVO> loginByAccount(@Validated({LoginByAccount.class}) @RequestBody UserLoginDTO userLoginDTO) {
+        UserInfoVO userInfoVO = authService.loginByAccount(userLoginDTO);
+        return BaseResponse.success(userInfoVO);
     }
+
 
 }

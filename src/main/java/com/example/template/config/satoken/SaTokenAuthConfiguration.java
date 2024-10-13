@@ -4,14 +4,13 @@ import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.filter.SaServletFilter;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import com.example.template.common.base.ErrorCodeEnum;
-import com.example.template.exception.customize.ServerException;
+import com.example.template.exception.customize.ServiceException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +65,7 @@ public class SaTokenAuthConfiguration implements WebMvcConfigurer {
                     // 如果想在过滤器器层面做认证，请将逻辑代码编写到此处，比如全局限流
                 })
                 // 异常处理函数：每次认证函数发生异常时执行此函数
-                .setError(e -> new ServerException(ErrorCodeEnum.USER_ERROR_A0301))
+                .setError(e -> new ServiceException(ErrorCodeEnum.USER_ERROR_A0301))
                 .setBeforeAuth(r -> {
                     // ---------- 设置一些安全响应头 ----------
                     SaHolder.getResponse()

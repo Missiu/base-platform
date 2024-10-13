@@ -1,13 +1,12 @@
 package com.example.template.exception.customize;
 
 import com.example.template.common.base.ErrorCodeEnum;
-import com.example.template.exception.BaseException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 系统和三分服务 异常处理
+ * 系统异常处理
  * 默认系统端错误码 SYSTEM_ERROR_B0001。适用于服务器内部未知错误。
  *
  * @author hzh
@@ -16,13 +15,13 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Slf4j
-public class ServerException extends BaseException {
+public class ServiceException extends BaseException {
 
 
     /**
      * 构造函数，默认系统端错误码 SYSTEM_ERROR_B0001 (系统执行出错)。
      */
-    public ServerException() {
+    public ServiceException() {
         this.errorCode = ErrorCodeEnum.SYSTEM_ERROR_B0001;
     }
 
@@ -31,7 +30,7 @@ public class ServerException extends BaseException {
      *
      * @param errorCode 自定义错误码枚举
      */
-    public ServerException(ErrorCodeEnum errorCode) {
+    public ServiceException(ErrorCodeEnum errorCode) {
         this.errorCode = errorCode;
     }
 
@@ -43,7 +42,7 @@ public class ServerException extends BaseException {
      * @param errorCode 自定义错误码
      * @param message   自定义错误信息
      */
-    public ServerException(ErrorCodeEnum errorCode, String message) {
+    public ServiceException(ErrorCodeEnum errorCode, String message) {
         this.errorCode = errorCode;
         this.message = message;
     }

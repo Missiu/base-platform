@@ -1,16 +1,27 @@
 package com.example.template.exception;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.example.template.common.base.BaseResponse;
 import com.example.template.common.base.ErrorCodeEnum;
+import com.example.template.common.base.response.BaseResponse;
+import com.example.template.common.base.response.GeneralResponse;
 import com.example.template.exception.customize.ClientException;
-import com.example.template.exception.customize.ServerException;
-import com.example.template.util.ExceptionThrowUtils;
+import com.example.template.exception.customize.RemoteServiceException;
+import com.example.template.exception.customize.ServiceException;
+import com.example.template.util.ThrowUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Security全局异常处理器
@@ -40,8 +51,8 @@ public class GlobalExceptionHandler {
     /**
      * 服务端异常处理
      */
-    @ExceptionHandler(ServerException.class)
-    public BaseResponse<Void> serverExceptionHandler(ServerException e, HttpServletRequest request) {
+    @ExceptionHandler(ServiceException.class)
+    public BaseResponse<Void> serverExceptionHandler(ServiceException e, HttpServletRequest request) {
         return handleException(e, request, "服务端异常", e.getErrorCode(), e.getMessage());
     }
 
@@ -53,28 +64,90 @@ public class GlobalExceptionHandler {
         return handleException(e, request, "客户端异常", e.getErrorCode(), e.getMessage());
     }
 
+
     /**
-     * 运行时异常处理 (未知异常)
+     * 第三方异常处理
      */
-    @ExceptionHandler(RuntimeException.class)
-    public BaseResponse<Void> runtimeExceptionHandler(RuntimeException e, HttpServletRequest request) {
-        return handleException(e, request, "系统异常", ErrorCodeEnum.SYSTEM_ERROR_B0001, e.getMessage());
+    @ExceptionHandler(RemoteServiceException.class)
+    public BaseResponse<Void> remoteServiceExceptionHandler(RemoteServiceException e, HttpServletRequest request) {
+        return handleException(e, request, "第三方服务异常", e.getErrorCode(), e.getMessage());
+    }
+
+    /**
+     * 其他异常处理 (未知异常)
+     */
+    @ExceptionHandler(Exception.class)
+    public BaseResponse<Void> runtimeExceptionHandler(Exception e, HttpServletRequest request) {
+        return handleException(e, request, "其他异常", ErrorCodeEnum.SYSTEM_ERROR_B0001, e.getMessage());
+    }
+
+    /**
+     * Validation 处理 form data方式调用接口校验失败抛出的异常
+     */
+    @ExceptionHandler(BindException.class)
+    public BaseResponse<Void> bindExceptionHandler(BindException e, HttpServletRequest request) {
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+        List<String> collect = fieldErrors.stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .toList();
+        String errorMessage = String.join(", ", collect);
+        return handleException(e, request, "客户端异常", ErrorCodeEnum.USER_ERROR_0001, errorMessage);
+    }
+
+    /**
+     * Validation 处理 json 请求体调用接口校验失败抛出的异常
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public BaseResponse<Void> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e, HttpServletRequest request) {
+        List<ObjectError> allErrors = e.getBindingResult().getAllErrors();
+        List<String> collect = allErrors.stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .toList();
+        String errorMessage = String.join(", ", collect);
+        return handleException(e, request, "客户端异常", ErrorCodeEnum.USER_ERROR_0001, errorMessage);
+    }
+
+    /**
+     * Validation 处理单个参数校验失败抛出的异常
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public BaseResponse<Void> constraintViolationExceptionHandler(ConstraintViolationException e, HttpServletRequest request) {
+        return handleException(e, request, "客户端异常", ErrorCodeEnum.USER_ERROR_0001, Objects.requireNonNull(e.getConstraintViolations().stream().findFirst().orElse(null)).getMessage());
     }
 
     /**
      * 统一异常处理逻辑
      */
-    private BaseResponse<Void> handleException(Exception e, HttpServletRequest request, String errorType, ErrorCodeEnum errorCode, String errorMsg) {
-        String stackTraceSummary = ExceptionThrowUtils.formatExceptionStackTrace(e);
-        if (ObjectUtil.isNull(errorMsg)) {
-            log.error("{} 发生异常, 异常类型: {}, 请求路径: {}, 错误码-错误信息: {}-{}, 原始错误信息: {}, 异常堆栈信息: \n{}",
-                    e.getClass().getName(), errorType, request.getRequestURI(), errorCode.getCode(), errorCode.getMessage(), e.getMessage(), stackTraceSummary);
+    private BaseResponse<Void> handleException(Exception e, HttpServletRequest request, String errorType, ErrorCodeEnum errorCode, String errorMessage) {
+        // 获取请求的URI和Referer
+        String requestURI = request.getRequestURI();
+        String referer = request.getHeader("Referer");
 
+        // 构建基础的请求信息，带上请求URL和Referer信息
+        String requestInfo = String.format("请求 [URL: %s] 的Referer [%s]", requestURI, referer == null ? "null" : referer);
+
+        // 根据errorMsg是否为空，动态生成最终的错误信息
+        String finalErrorMsg = ObjectUtil.isNotEmpty(errorMessage) ? errorMessage : errorCode.getMessage();
+
+        // 拼接成完整的错误信息
+        finalErrorMsg = String.format("%s 发生 [%s] 内容为 [%s]", requestInfo, errorType, finalErrorMsg);
+
+        // 获取异常的堆栈摘要信息
+        String stackTraceSummary = ThrowUtils.formatExceptionStackTrace(e);
+
+        // 日志处理
+        log.error("{}-{} 发生异常, \n 错误码: {}, 错误信息: {}, 原始错误信息: {} \n 异常发生地址: {}, 请求路径: {} \n 异常堆栈信息: \n{}",
+                errorType, e.getClass().getName(), errorCode.getCode(), finalErrorMsg, e.getLocalizedMessage(),
+                requestURI, errorType, stackTraceSummary);
+
+        // 判断是否登录用户，决定返回的响应内容
+        if (StpUtil.isLogin()) {
+            // 获取 traceId 并返回带 traceId 的响应
+            String traceId = StpUtil.getTokenValue();
+            return GeneralResponse.error(errorCode, finalErrorMsg, traceId);
         } else {
-            log.error("{} 发生异常, 异常类型: {}, 请求路径: {}, 错误码: {}, 自定义错误信息: {}, 原始错误信息: {}, 异常堆栈信息: \n{}",
-                    e.getClass().getName(), errorType, request.getRequestURI(), errorCode.getCode(), errorMsg, e.getMessage(), stackTraceSummary);
-
+            // 返回没有 traceId 的 BaseResponse
+            return BaseResponse.error(errorCode, finalErrorMsg);
         }
-        return BaseResponse.error(errorCode);
     }
 }
