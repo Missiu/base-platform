@@ -27,6 +27,7 @@
         <ali.oss.version>3.18.1</ali.oss.version>
         <shardingsphere.version>5.5.0</shardingsphere.version>
         <druid.starter.version>1.2.23</druid.starter.version>
+        <ali-sms.version>3.0.0</ali-sms.version>
     </properties>
 
     <dependencies>
@@ -182,6 +183,18 @@
         </dependency>
         <!-- ========== Redis 相关依赖结束 ========== -->
 
+        <!-- ========== 消息队列相关依赖 ========== -->
+        <!-- RabbitMQ 依赖配置 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <!-- ========== 消息队列相关依赖结束 ========== -->
+
         <!-- ========== API 文档相关依赖 ========== -->
         <!-- Knife4j，接口文档生成工具，支持 Swagger 和 OpenAPI -->
         <dependency>
@@ -251,6 +264,21 @@
         </dependency>
         <!-- ========== 云存储相关依赖结束 ========== -->
 
+        <!-- ========== 验证码发送相关依赖 ========== -->
+        <!-- 阿里云 SMS，云短信服务 -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>alibabacloud-dysmsapi20170525</artifactId>
+            <version>${ali-sms.version}</version>
+        </dependency>
+
+        <!-- Spring Boot Starter Mail，提供邮件发送功能 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <!-- ========== 验证码发送相关依赖结束 ========== -->
+
     </dependencies>
 
 
@@ -318,6 +346,7 @@
                     <!-- 包含其他配置文件 -->
                     <include>log4j2/**</include>
                     <include>redis/**</include>
+                    <include>rabbitmq-config.yaml</include>
                 </includes>
                 <!-- 禁用过滤，保留文件原始内容，不进行占位符替换 -->
                 <filtering>false</filtering>

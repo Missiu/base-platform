@@ -1,6 +1,6 @@
 package com.example.template.exception.customize;
 
-import com.example.template.common.base.ErrorCodeEnum;
+import com.example.template.common.base.ErrorCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,8 +14,14 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class BaseException extends RuntimeException {
 
-    public ErrorCodeEnum errorCode;
+    /**
+     * 错误码
+     */
+    public ErrorCode errorCode;
 
+    /**
+     * 错误信息
+     */
     public String message;
 
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -15,7 +16,7 @@ import java.util.Date;
  * @author hzh
  * @TableName user
  */
-@TableName(value = "user")
+@TableName(value = "t_user")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -98,6 +99,7 @@ public class User implements Serializable {
     @TableField(value = "is_deleted")
     private Integer deleted;
 
+    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

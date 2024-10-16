@@ -1,7 +1,7 @@
 package com.example.template.common.base.response;
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.example.template.common.base.ErrorCodeEnum;
+import com.example.template.common.base.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -55,7 +55,7 @@ public class GeneralResponse<T> extends BaseResponse<T> implements Serializable 
      * @return GeneralResponse
      */
     public static <T> GeneralResponse<T> success() {
-        return build(StpUtil.getTokenValue(), ErrorCodeEnum.SUCCESS.getCode(), ErrorCodeEnum.SUCCESS.getMessage(), true, null);
+        return build(StpUtil.getTokenValue(), ErrorCode.SUCCESS.getCode(), ErrorCode.SUCCESS.getMessage(), true, null);
     }
 
     /**
@@ -67,7 +67,7 @@ public class GeneralResponse<T> extends BaseResponse<T> implements Serializable 
      * @return GeneralResponse
      */
     public static <T> GeneralResponse<T> success(String message) {
-        return build(StpUtil.getTokenValue(), ErrorCodeEnum.SUCCESS.getCode(), message, true, null);
+        return build(StpUtil.getTokenValue(), ErrorCode.SUCCESS.getCode(), message, true, null);
     }
 
     /**
@@ -79,7 +79,7 @@ public class GeneralResponse<T> extends BaseResponse<T> implements Serializable 
      * @return GeneralResponse
      */
     public static <T> GeneralResponse<T> success(String traceId, String message) {
-        return build(traceId, ErrorCodeEnum.SUCCESS.getCode(), message, true, null);
+        return build(traceId, ErrorCode.SUCCESS.getCode(), message, true, null);
     }
 
     /**
@@ -90,7 +90,7 @@ public class GeneralResponse<T> extends BaseResponse<T> implements Serializable 
      * @return GeneralResponse
      */
     public static <T> GeneralResponse<T> success(T data) {
-        return build(StpUtil.getTokenValue(), ErrorCodeEnum.SUCCESS.getCode(), ErrorCodeEnum.SUCCESS.getMessage(), true, data);
+        return build(StpUtil.getTokenValue(), ErrorCode.SUCCESS.getCode(), ErrorCode.SUCCESS.getMessage(), true, data);
     }
 
     /**
@@ -102,56 +102,56 @@ public class GeneralResponse<T> extends BaseResponse<T> implements Serializable 
      * @return GeneralResponse
      */
     public static <T> GeneralResponse<T> success(T data, String message) {
-        return build(StpUtil.getTokenValue(), ErrorCodeEnum.SUCCESS.getCode(), message, true, data);
+        return build(StpUtil.getTokenValue(), ErrorCode.SUCCESS.getCode(), message, true, data);
     }
 
     /**
      * 错误返回，默认返回数据为null。
      * 返回null的情况：当发生错误时，不需要返回数据，仅返回错误信息。
      *
-     * @param errorCodeEnum 错误码枚举
+     * @param errorCode 错误码枚举
      * @param <T>           返回的数据类型
      * @return GeneralResponse
      */
-    public static <T> GeneralResponse<T> error(ErrorCodeEnum errorCodeEnum) {
-        return build(StpUtil.getTokenValue(), errorCodeEnum.getCode(), errorCodeEnum.getMessage(), false, null);
+    public static <T> GeneralResponse<T> error(ErrorCode errorCode) {
+        return build(StpUtil.getTokenValue(), errorCode.getCode(), errorCode.getMessage(), false, null);
     }
 
     /**
      * 错误返回，可以返回具体数据。
      *
-     * @param errorCodeEnum 错误码枚举
+     * @param errorCode 错误码枚举
      * @param data          返回的数据
      * @param <T>           返回的数据类型
      * @return GeneralResponse
      */
-    public static <T> GeneralResponse<T> error(ErrorCodeEnum errorCodeEnum, T data) {
-        return build(StpUtil.getTokenValue(), errorCodeEnum.getCode(), errorCodeEnum.getMessage(), false, data);
+    public static <T> GeneralResponse<T> error(ErrorCode errorCode, T data) {
+        return build(StpUtil.getTokenValue(), errorCode.getCode(), errorCode.getMessage(), false, data);
     }
 
     /**
      * 错误返回，自定义消息内容，默认返回数据为null。
      * 返回null的情况：当仅需要返回自定义的错误消息内容时。
      *
-     * @param errorCodeEnum 错误码枚举
+     * @param errorCode 错误码枚举
      * @param message       自定义消息内容
      * @param <T>           返回的数据类型
      * @return GeneralResponse
      */
-    public static <T> GeneralResponse<T> error(ErrorCodeEnum errorCodeEnum, String message) {
-        return build(StpUtil.getTokenValue(), errorCodeEnum.getCode(), message, false, null);
+    public static <T> GeneralResponse<T> error(ErrorCode errorCode, String message) {
+        return build(StpUtil.getTokenValue(), errorCode.getCode(), message, false, null);
     }
 
     /**
      * 错误返回，自定义消息内容和溯源id，默认返回数据为null。
      *
-     * @param errorCodeEnum 错误码枚举
+     * @param errorCode 错误码枚举
      * @param message       自定义消息内容
      * @param traceId       溯源id
      * @param <T>           返回的数据类型
      * @return GeneralResponse
      */
-    public static <T> GeneralResponse<T> error(ErrorCodeEnum errorCodeEnum, String message, String traceId) {
-        return build(traceId, errorCodeEnum.getCode(), message, false, null);
+    public static <T> GeneralResponse<T> error(ErrorCode errorCode, String message, String traceId) {
+        return build(traceId, errorCode.getCode(), message, false, null);
     }
 }

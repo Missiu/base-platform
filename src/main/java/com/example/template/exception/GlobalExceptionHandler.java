@@ -2,7 +2,7 @@ package com.example.template.exception;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.example.template.common.base.ErrorCodeEnum;
+import com.example.template.common.base.ErrorCode;
 import com.example.template.common.base.response.BaseResponse;
 import com.example.template.common.base.response.GeneralResponse;
 import com.example.template.exception.customize.ClientException;
@@ -78,7 +78,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public BaseResponse<Void> runtimeExceptionHandler(Exception e, HttpServletRequest request) {
-        return handleException(e, request, "其他异常", ErrorCodeEnum.SYSTEM_ERROR_B0001, e.getMessage());
+        return handleException(e, request, "其他异常", ErrorCode.SYSTEM_ERROR_B0001, e.getMessage());
     }
 
     /**
@@ -91,7 +91,7 @@ public class GlobalExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
         String errorMessage = String.join(", ", collect);
-        return handleException(e, request, "客户端异常", ErrorCodeEnum.USER_ERROR_0001, errorMessage);
+        return handleException(e, request, "客户端异常", ErrorCode.USER_ERROR_0001, errorMessage);
     }
 
     /**
@@ -104,7 +104,7 @@ public class GlobalExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
         String errorMessage = String.join(", ", collect);
-        return handleException(e, request, "客户端异常", ErrorCodeEnum.USER_ERROR_0001, errorMessage);
+        return handleException(e, request, "客户端异常", ErrorCode.USER_ERROR_0001, errorMessage);
     }
 
     /**
@@ -112,13 +112,13 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public BaseResponse<Void> constraintViolationExceptionHandler(ConstraintViolationException e, HttpServletRequest request) {
-        return handleException(e, request, "客户端异常", ErrorCodeEnum.USER_ERROR_0001, Objects.requireNonNull(e.getConstraintViolations().stream().findFirst().orElse(null)).getMessage());
+        return handleException(e, request, "客户端异常", ErrorCode.USER_ERROR_0001, Objects.requireNonNull(e.getConstraintViolations().stream().findFirst().orElse(null)).getMessage());
     }
 
     /**
      * 统一异常处理逻辑
      */
-    private BaseResponse<Void> handleException(Exception e, HttpServletRequest request, String errorType, ErrorCodeEnum errorCode, String errorMessage) {
+    private BaseResponse<Void> handleException(Exception e, HttpServletRequest request, String errorType, ErrorCode errorCode, String errorMessage) {
         // 获取请求的URI和Referer
         String requestURI = request.getRequestURI();
         String referer = request.getHeader("Referer");

@@ -1,6 +1,6 @@
 package com.example.template.common.base.response;
 
-import com.example.template.common.base.ErrorCodeEnum;
+import com.example.template.common.base.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -58,7 +58,7 @@ public class BaseResponse<T> implements Serializable {
      * @return BaseResponse
      */
     public static <T> BaseResponse<T> success() {
-        return build(ErrorCodeEnum.SUCCESS.getCode(), ErrorCodeEnum.SUCCESS.getMessage(), true, null);
+        return build(ErrorCode.SUCCESS.getCode(), ErrorCode.SUCCESS.getMessage(), true, null);
     }
 
     /**
@@ -69,7 +69,7 @@ public class BaseResponse<T> implements Serializable {
      * @return BaseResponse
      */
     public static <T> BaseResponse<T> success(String message) {
-        return build(ErrorCodeEnum.SUCCESS.getCode(), message, true, null);
+        return build(ErrorCode.SUCCESS.getCode(), message, true, null);
     }
 
     /**
@@ -80,7 +80,7 @@ public class BaseResponse<T> implements Serializable {
      * @return BaseResponse
      */
     public static <T> BaseResponse<T> success(T data) {
-        return build(ErrorCodeEnum.SUCCESS.getCode(), ErrorCodeEnum.SUCCESS.getMessage(), true, data);
+        return build(ErrorCode.SUCCESS.getCode(), ErrorCode.SUCCESS.getMessage(), true, data);
     }
 
     /**
@@ -92,41 +92,41 @@ public class BaseResponse<T> implements Serializable {
      * @return BaseResponse
      */
     public static <T> BaseResponse<T> success(T data, String message) {
-        return build(ErrorCodeEnum.SUCCESS.getCode(), message, true, data);
+        return build(ErrorCode.SUCCESS.getCode(), message, true, data);
     }
 
     /**
      * 错误返回，方法的返回值可以为null，不强制返回空集合，或者空对象
      *
-     * @param errorCodeEnum 错误码枚举
+     * @param errorCode 错误码枚举
      * @param data          返回的数据
      * @param <T>           返回的数据类型
      * @return BaseResponse
      */
-    public static <T> BaseResponse<T> error(ErrorCodeEnum errorCodeEnum, T data) {
-        return build(errorCodeEnum.getCode(), errorCodeEnum.getMessage(), false, data);
+    public static <T> BaseResponse<T> error(ErrorCode errorCode, T data) {
+        return build(errorCode.getCode(), errorCode.getMessage(), false, data);
     }
 
     /**
      * 必须添加注释充分说明什么情况下会返回null值
      *
-     * @param errorCodeEnum 错误码枚举
+     * @param errorCode 错误码枚举
      * @param <T>           返回的数据类型
      * @return BaseResponse
      */
-    public static <T> BaseResponse<T> error(ErrorCodeEnum errorCodeEnum) {
-        return build(errorCodeEnum.getCode(), errorCodeEnum.getMessage(), false, null);
+    public static <T> BaseResponse<T> error(ErrorCode errorCode) {
+        return build(errorCode.getCode(), errorCode.getMessage(), false, null);
     }
 
     /**
      * 自定义消息内容
      *
-     * @param errorCodeEnum 错误码枚举
+     * @param errorCode 错误码枚举
      * @param message       自定义消息内容
      * @param <T>           返回的数据类型
      * @return BaseResponse
      */
-    public static <T> BaseResponse<T> error(ErrorCodeEnum errorCodeEnum, String message) {
-        return build(errorCodeEnum.getCode(), message, false, null);
+    public static <T> BaseResponse<T> error(ErrorCode errorCode, String message) {
+        return build(errorCode.getCode(), message, false, null);
     }
 }

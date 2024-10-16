@@ -1,6 +1,6 @@
 package com.example.template.exception.customize;
 
-import com.example.template.common.base.ErrorCodeEnum;
+import com.example.template.common.base.ErrorCode;
 
 /**
  * 客户端异常类
@@ -14,7 +14,7 @@ public class ClientException extends BaseException {
      * 构造函数，默认系统端错误码 USER_ERROR_0001 (用户端错误)。
      */
     public ClientException() {
-        this.errorCode = ErrorCodeEnum.USER_ERROR_0001;
+        this.errorCode = ErrorCode.USER_ERROR_0001;
     }
 
     /**
@@ -22,7 +22,7 @@ public class ClientException extends BaseException {
      *
      * @param errorCode 自定义错误码枚举
      */
-    public ClientException(ErrorCodeEnum errorCode) {
+    public ClientException(ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
 
@@ -34,7 +34,7 @@ public class ClientException extends BaseException {
      * @param errorCode 自定义错误码枚举
      * @param message   自定义错误信息
      */
-    public ClientException(ErrorCodeEnum errorCode, String message) {
+    public ClientException(ErrorCode errorCode, String message) {
         this.errorCode = errorCode;
         this.message = message;
     }

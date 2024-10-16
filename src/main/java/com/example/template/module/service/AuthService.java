@@ -1,10 +1,9 @@
 package com.example.template.module.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.example.template.module.domain.dto.auth.UserLoginDTO;
-import com.example.template.module.domain.dto.auth.UserRegisterDTO;
+import com.example.template.module.domain.dto.auth.UserAuthDTO;
 import com.example.template.module.domain.entity.User;
-import com.example.template.module.domain.vo.auth.UserInfoVO;
+import com.example.template.module.domain.vo.auth.UserAuthVO;
 
 /**
 * @author hzh
@@ -13,7 +12,14 @@ import com.example.template.module.domain.vo.auth.UserInfoVO;
 */
 public interface AuthService extends IService<User> {
 
-    void registerByAccount(UserRegisterDTO userRegisterDTO);
+    void registerByPassword(UserAuthDTO userAuthDTO);
 
-    UserInfoVO loginByAccount(UserLoginDTO userLoginDTO);
+    UserAuthVO loginByPassword(UserAuthDTO userAuthDTO);
+
+    UserAuthVO authByEmail(UserAuthDTO userAuthDTO);
+
+    void sendVerifyCode(UserAuthDTO userAuthDTO);
+
+    UserAuthVO authByPhone(UserAuthDTO userAuthDTO);
+
 }

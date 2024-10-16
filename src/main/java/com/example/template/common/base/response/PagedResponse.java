@@ -1,7 +1,7 @@
 package com.example.template.common.base.response;
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.example.template.common.base.ErrorCodeEnum;
+import com.example.template.common.base.ErrorCode;
 import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -75,8 +75,8 @@ public class PagedResponse<T> extends GeneralResponse<T> implements Serializable
     public static <T> PagedResponse<T> success(List<T> rows) {
         PageInfo<T> pageInfo = new PageInfo<>(rows);
         return build(StpUtil.getTokenValue(),
-                ErrorCodeEnum.SUCCESS.getCode(),
-                ErrorCodeEnum.SUCCESS.getMessage(),
+                ErrorCode.SUCCESS.getCode(),
+                ErrorCode.SUCCESS.getMessage(),
                 true,
                 pageInfo.getPageNum(),
                 pageInfo.getPageSize(),
@@ -95,7 +95,7 @@ public class PagedResponse<T> extends GeneralResponse<T> implements Serializable
     public static <T> PagedResponse<T> success(List<T> rows, String message) {
         PageInfo<T> pageInfo = new PageInfo<>(rows);
         return build(StpUtil.getTokenValue(),
-                ErrorCodeEnum.SUCCESS.getCode(),
+                ErrorCode.SUCCESS.getCode(),
                 message,
                 true,
                 pageInfo.getPageNum(),

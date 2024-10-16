@@ -1,6 +1,6 @@
 package com.example.template.exception.customize;
 
-import com.example.template.common.base.ErrorCodeEnum;
+import com.example.template.common.base.ErrorCode;
 
 /**
  * 远程服务异常类
@@ -13,7 +13,7 @@ public class RemoteServiceException extends BaseException {
      * 构造函数，默认系统端错误码 USER_ERROR_0001 (用户端错误)。
      */
     public RemoteServiceException() {
-        this.errorCode = ErrorCodeEnum.SERVICE_ERROR_C0001;
+        this.errorCode = ErrorCode.SERVICE_ERROR_C0001;
     }
 
     /**
@@ -21,7 +21,7 @@ public class RemoteServiceException extends BaseException {
      *
      * @param errorCode 自定义错误码枚举
      */
-    public RemoteServiceException(ErrorCodeEnum errorCode) {
+    public RemoteServiceException(ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
 
@@ -33,7 +33,7 @@ public class RemoteServiceException extends BaseException {
      * @param errorCode 自定义错误码枚举
      * @param message   自定义错误信息
      */
-    public RemoteServiceException(ErrorCodeEnum errorCode, String message) {
+    public RemoteServiceException(ErrorCode errorCode, String message) {
         this.errorCode = errorCode;
         this.message = message;
     }

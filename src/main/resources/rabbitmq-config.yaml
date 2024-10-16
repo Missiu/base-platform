@@ -1,0 +1,14 @@
+rabbitmq:
+  exchange:
+    defaultExchange: exchange.default
+    delay: exchange.with.delay.default
+    dlx: exchange.with.dlx.default
+  queue:
+    defaultQueue: queue.default
+    delay: queue.with.delay.default
+    dlx: queue.with.dlx.default
+  routing-key:
+    defaultRoutingKey: binding.routing.key.default
+    delay: binding.with.delay.routing.key.default
+    dlx: binding.with.dlx.routing.key.default
+  ttl: 60000  # 延迟队列的TTL时间（毫秒）

@@ -40,6 +40,7 @@ server:
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
 
+
 # 公共配置文件
 spring:
   # 项目前置工作 ---- 可自定义
@@ -59,42 +60,130 @@ spring:
       max-file-size: 12MB
       # 设置总上传的文件大小
       max-request-size: 20MB
-  # 数据库配置
+  config:
+    import: classpath:rabbitmq-config.yaml
+  # 定时任务配置
+  pool:
+    # 线程池配置
+    scheduled:
+      # 核心线程数
+      core-size: 10
+    async:
+      # 核心线程数
+      core-size: 10
+      # 最大线程数
+      max-size: 20
+      # 队列容量
+      queue-capacity: 50
+      #  线程名称前缀
+      thread-name-prefix: async-pool-
+    custom:
+      core-size: 10
+      keep-alive-time: 10
+      max-size: 20
+      queue-capacity: 50
+      thread-name-prefix: custom-pool-
+  # 邮件配置
+  mail:
+    # smtp服务器主机（163的）
+    host: smtp.163.com
+    # 连接邮件服务器端口(默认SMTP 25 POP 110)
+    port: 25
+    # 登录服务器邮箱账号
+    username: 15775278810@163.com
+    # 发送邮件的邮箱验证密码或者授权码
+    password: SFMJOJSOLQLDHOYZ
+    # 邮件默认编码
+    default-encoding: UTF-8
+    # 服务协议SMTP（代表是发送邮件）
+    protocol: smtp
+    properties:
+      # 默认发送方邮箱账号（当程序未指定发件人邮箱则默认取这个）
+      mail.smtp.from: 15775278810@163.com
+      # 开启权限认证
+      mail.smtp.auth: true
+      # 连接时间的限制
+      mail.smtp.connectiontimeout: 60000
+      # 邮件接收时间的限制
+      mail.smtp.timeout: 60000
+      #  邮件发送时间的限制（毫秒）
+      mail.smtp.writetimeout: 60000
+      # 日志打印，邮件发送过程的日志会被输出
+      mail.debug: false
+      # 最大附件大小 50M
+      mail.attachment.size.limit: 52428800
+      # 最大图片大小 5M
+      mail.image.size.limit: 5242880
+      # 图片类型
+      mail.image.types: jpg,jpeg,png,gif,bmp
+
+  rabbitmq:
+    # 单机 RabbitMQ IP（单价模式配置和集群模式配置只能存在一个）
+    host: 127.0.0.1
+    # 单机 RabbitMQ 端口
+    port: 5672
+    # 集群RabbitMQ（单价模式配置和集群模式配置只能存在一个）
+    #addresses: 127.0.0.1:5672,127.0.0.1:5673,127.0.0.1:5674
+    # 虚拟主机
+    virtual-host: /
+    # 用户名
+    username: guest
+    # 密码
+    password: guest
+
+    # 消息确认（ACK）
+    publisher-confirm-type: correlated #确认消息已发送到交换机(Exchange)
+    publisher-returns: true #确认消息已发送到队列(Queue)
+#    设置开启Mandatory,才能触发回调函数,无论消息推送结果怎么样都强制调用回调函数(设置消息进入交换机后未被队列接收的消息不被丢弃由broker保存,false为丢弃)
+    template:
+      mandatory: true
+      receive-timeout: 30000
+      reply-timeout:  30000
+    #      ReceiveTimeout
+    # 是否手动ACK
+    listener:
+      type: simple
+      direct:
+        acknowledge-mode: manual
+      simple:
+        acknowledge-mode: manual
+  # Redis配置
   data:
-    # todo redis配置（预先开启单机模式）
-    # 系统缓存Redis配置（这里的Redis配置主要用于鉴权认证等模板自带服务的系统缓存服务，要求Redis版本在7.0以上）
     redis:
-      # 单机地址（单价模式配置和集群模式配置只能存在一个）
+      database: 2
       host: 127.0.0.1
-      # 单机端口，默认为6379
       port: 6379
-      # todo redis集群模式配置
-      # 集群地址（单价模式配置和集群模式配置只能存在一个）
-      #cluster:
-      #  nodes:
-      #    - 127.0.0.1:6379
-      #    - 127.0.0.1:6380
-      #    - 127.0.0.1:6381
-      #    - 127.0.0.1:6382
-      #    - 127.0.0.1:6383
-      #    - 127.0.0.1:6384
-      # 数据库索引
-      database: 3
-      # 密码（考虑是否需要密码）
       password: huzhihao
-      # 连接超时时间
-      timeout: 3s
-      # redis连接池
+      timeout: 10000
+
       lettuce:
         pool:
-          # 最小空闲连接数
-          min-idle: 8
-          # 最大空闲连接数
-          max-idle: 25
-          # 最大活动连接数
-          max-active: 50
-          # 最大等待时间/ms
-          max-wait: 3000
+          enabled: true
+          max-active: 8
+          max-idle: 8
+          max-wait: -1ms
+          min-idle: 0
+          time-between-eviction-runs: 10m
+      #      cluster:
+#        max-redirects: 3
+#        nodes:
+#          - 127.0.0.1:7000
+#          - 127.0.0.1:7001
+#          - 127.0.0.1:7002
+#          - 127.0.0.1:7003
+#          - 127.0.0.1:7004
+#          - 127.0.0.1:7005
+      jedis:
+        pool:
+          max-active: 8
+          max-idle: 8
+          max-wait: -1ms
+          min-idle: 0
+          time-between-eviction-runs: 10m
+          enabled: false
+      client-type: lettuce
+
+
 
   # MySQL配置
   datasource:
@@ -217,9 +306,11 @@ mybatis-plus:
     # 关闭日志记录 (可单纯使用 p6spy 分析) org.apache.ibatis.logging.nologging.NoLoggingImpl
     # 默认日志输出 org.apache.ibatis.logging.slf4j.Slf4jImpl
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    # 二级缓存配置
+    # cache-enabled: true
   global-config:
     # 是否打印 Logo banner
-    banner: true
+    banner: false
     db-config:
       # 主键类型
       # AUTO 自增；NONE 空；INPUT 用户输入；ASSIGN_ID 雪花算法；ASSIGN_UUID 排除中划线的UUID；UUID 普通的UUID；
@@ -360,4 +451,51 @@ pagehelper:
   support-methods-arguments: false
   # 用于从对象中根据属性名取值，可以配置pageNum，pageSize，count 不用配置映射的默认值。
   params: countSql
+
+
+
+
+sms:
+  # 启用或禁用该配置项
+  enable: true
+  # 模板代码，用于指定消息的格式和内容
+  template-code: xxxxxxx
+  # 访问密钥ID，用于身份验证
+  access-key-id: xxxxxxx
+  # 访问密钥密钥，用于身份验证
+  access-key-secret: xxxxxxx
+  # 地域ID，用于指定服务区域
+  region-id: cn-hongkong
+  # 终端节点，用于指定服务访问地址
+  # Endpoint 请参考 https://api.aliyun.com/product/Dysmsapi
+  endpoint: dysmsapi.aliyuncs.com
+  # 短信签名名称，用于标识发送方
+  sign-name: 阿里云短信测试
+
+oss:
+  # 腾讯云COS配置
+  tencent:
+    # todo 是否开启（预先关闭）
+    enable: false
+    # 地域
+    region: ap-xxxxxxxx
+    # 用户的 SecretId，建议使用子账号密钥，授权遵循最小权限指引，降低使用风险。子账号密钥获取可参见 https://cloud.tencent.com/document/product/598/37140
+    secret-id: xxxxxxxx
+    # 用户的 SecretKey，建议使用子账号密钥，授权遵循最小权限指引，降低使用风险。子账号密钥获取可参见 https://cloud.tencent.com/document/product/598/37140
+    secret-key: xxxxxxxx
+    # 桶名称
+    bucket-name: xxxxxxxx
+  # 阿里云OSS配置
+  ali:
+    # todo 是否开启（预先关闭）
+    enable: false
+    # 域名 以华东1（杭州）为例，Endpoint填写为https://oss-cn-hangzhou.aliyuncs.com。
+    endpoint: https://oss-xx-xxx.aliyuncs.com
+    # 用户的 SecretId
+    secret-id: xxxxxxxx
+    # 用户的 SecretKey
+    secret-key: xxxxxxxx
+    # 桶名称
+    bucket-name: xxxxxxxx
+
 

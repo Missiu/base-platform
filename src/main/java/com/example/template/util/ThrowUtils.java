@@ -1,6 +1,6 @@
 package com.example.template.util;
 
-import com.example.template.common.base.ErrorCodeEnum;
+import com.example.template.common.base.ErrorCode;
 import com.example.template.exception.customize.ClientException;
 import com.example.template.exception.customize.RemoteServiceException;
 import com.example.template.exception.customize.ServiceException;
@@ -19,11 +19,11 @@ public class ThrowUtils {
      * 条件成立则抛客户端异常
      *
      * @param condition     条件
-     * @param errorCodeEnum 错误码枚举
+     * @param errorCode 错误码枚举
      */
-    public static void clientExceptionThrowIf(boolean condition, ErrorCodeEnum errorCodeEnum) {
+    public static void clientExceptionThrowIf(boolean condition, ErrorCode errorCode) {
         if (condition) {
-            throw new ClientException(errorCodeEnum);
+            throw new ClientException(errorCode);
         }
     }
 
@@ -31,12 +31,47 @@ public class ThrowUtils {
      * 条件成立则抛客户端异常
      *
      * @param condition     条件
-     * @param errorCodeEnum 错误码枚举
+     * @param errorCode 错误码枚举
      * @param message       自定义异常信息
      */
-    public static void clientExceptionThrowIf(boolean condition, ErrorCodeEnum errorCodeEnum, String message) {
+    public static void clientExceptionThrowIf(boolean condition, ErrorCode errorCode, String message) {
         if (condition) {
-            throw new ClientException(errorCodeEnum, message);
+            throw new ClientException(errorCode, message);
+        }
+    }
+    /**
+     * 条件不成立则抛客户端异常
+     *
+     * @param condition     条件
+     * @param errorCode 错误码枚举
+     */
+    public static void clientExceptionThrowIfNot(boolean condition, ErrorCode errorCode) {
+        if (Boolean.FALSE.equals(condition)) {
+            throw new ClientException(errorCode);
+        }
+    }
+
+    /**
+     * 条件成立不则抛客户端异常
+     *
+     * @param condition     条件
+     * @param errorCode 错误码枚举
+     * @param message       自定义异常信息
+     */
+    public static void clientExceptionThrowIfNot(boolean condition, ErrorCode errorCode, String message) {
+        if (Boolean.FALSE.equals(condition)) {
+            throw new ClientException(errorCode, message);
+        }
+    }
+    /**
+     * 条件成立则抛服务端异常
+     *
+     * @param condition     条件
+     * @param errorCode 错误码枚举
+     */
+    public static void serverExceptionThrowIf(boolean condition, ErrorCode errorCode) {
+        if (condition) {
+            throw new ServiceException(errorCode);
         }
     }
 
@@ -44,24 +79,37 @@ public class ThrowUtils {
      * 条件成立则抛服务端异常
      *
      * @param condition     条件
-     * @param errorCodeEnum 错误码枚举
+     * @param errorCode 错误码枚举
+     * @param message       自定义异常信息
      */
-    public static void serverExceptionThrowIf(boolean condition, ErrorCodeEnum errorCodeEnum) {
+    public static void serverExceptionThrowIf(boolean condition, ErrorCode errorCode, String message) {
         if (condition) {
-            throw new ServiceException(errorCodeEnum);
+            throw new ServiceException(errorCode, message);
         }
     }
 
     /**
-     * 条件成立则抛服务端异常
+     * 条件不成立则抛服务端异常
      *
      * @param condition     条件
-     * @param errorCodeEnum 错误码枚举
+     * @param errorCode 错误码枚举
+     */
+    public static void serverExceptionThrowIfNot(boolean condition, ErrorCode errorCode) {
+        if (Boolean.FALSE.equals(condition)) {
+            throw new ServiceException(errorCode);
+        }
+    }
+
+    /**
+     * 条件不成立则抛服务端异常
+     *
+     * @param condition     条件
+     * @param errorCode 错误码枚举
      * @param message       自定义异常信息
      */
-    public static void serverExceptionThrowIf(boolean condition, ErrorCodeEnum errorCodeEnum, String message) {
-        if (condition) {
-            throw new ServiceException(errorCodeEnum, message);
+    public static void serverExceptionThrowIfNot(boolean condition, ErrorCode errorCode, String message) {
+        if (Boolean.FALSE.equals(condition)) {
+            throw new ServiceException(errorCode, message);
         }
     }
 
@@ -69,11 +117,47 @@ public class ThrowUtils {
      * 条件成立则远程调用服务端异常
      *
      * @param condition     条件
-     * @param errorCodeEnum 错误码枚举
+     * @param errorCode 错误码枚举
      */
-    public static void remoteServerExceptionThrowIf(boolean condition, ErrorCodeEnum errorCodeEnum) {
+    public static void remoteServerExceptionThrowIf(boolean condition, ErrorCode errorCode) {
         if (condition) {
-            throw new RemoteServiceException(errorCodeEnum);
+            throw new RemoteServiceException(errorCode);
+        }
+    }
+
+    /**
+     * 条件成立则远程调用服务端异常
+     *
+     * @param condition     条件
+     * @param errorCode 错误码枚举
+     */
+    public static void remoteServerExceptionThrowIf(boolean condition, ErrorCode errorCode, String message) {
+        if (condition) {
+            throw new RemoteServiceException(errorCode,message);
+        }
+    }
+
+    /**
+     * 条件成立则远程调用服务端异常
+     *
+     * @param condition     条件
+     * @param errorCode 错误码枚举
+     */
+    public static void remoteServerExceptionThrowIfNot(boolean condition, ErrorCode errorCode) {
+        if (Boolean.FALSE.equals(condition)) {
+            throw new RemoteServiceException(errorCode);
+        }
+    }
+
+    /**
+     * 条件成立则远程调用服务端异常
+     *
+     * @param condition     条件
+     * @param errorCode 错误码枚举
+     */
+    public static void remoteServerExceptionThrowIfNot(boolean condition, ErrorCode errorCode, String message) {
+        if (Boolean.FALSE.equals(condition)) {
+            throw new RemoteServiceException(errorCode,message);
         }
     }
 

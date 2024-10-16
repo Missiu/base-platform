@@ -1,9 +1,8 @@
 package com.example.template.common.properties;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -14,6 +13,7 @@ import java.util.List;
  * @data 2024/10/7  13:17
  */
 @Data
+@Component
 @ConfigurationProperties(prefix = "redisson")
 public class RedissonProperties {
 
@@ -41,8 +41,6 @@ public class RedissonProperties {
      * 单机服务配置
      */
     @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class SingleServerConfig {
 
         /**
@@ -96,8 +94,6 @@ public class RedissonProperties {
      * 集群服务配置
      */
     @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class ClusterServersConfig {
 
         /**

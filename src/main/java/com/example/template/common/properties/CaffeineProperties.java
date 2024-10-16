@@ -2,6 +2,7 @@ package com.example.template.common.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
  * Caffeine配置属性
@@ -10,13 +11,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @data 2024/10/5 11:40
  */
 @Data
+@Component
 @ConfigurationProperties(prefix = "caffeine")
 public class CaffeineProperties {
-
-    /**
-     * 是否启动
-     */
-    private Boolean enable = false;
 
     /**
      * 最后一次写入或访问后经过固定时间过期，单位：秒

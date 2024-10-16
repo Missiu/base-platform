@@ -53,6 +53,11 @@ public interface CommonConstants {
     String SHA256 = "SHA-256";
 
     /**
+     * MD5加密算法
+     */
+    String MD5 = "MD5";
+
+    /**
      * UTF-8 字符集
      */
     String UTF8 = "UTF-8";
@@ -86,4 +91,24 @@ public interface CommonConstants {
      * 未知文件ContentType
      */
     String UNKNOWN_FILE_CONTENT_TYPE = "application/octet-stream";
+
+    /**
+     * 未知文件名称
+     */
+    String UNKNOWN_FILE_NAME = "none.";
+
+    /**
+     * 验证码邮箱默认长度
+     */
+    Integer DEFAULT_CODE_LENGTH = 6;
+
+    /**
+     * 默认短信验证码长度
+     */
+    Integer DEFAULT_SMS_CODE_LENGTH = 4;
+
+    /**
+     * 日期格式
+     */
+    String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 }
